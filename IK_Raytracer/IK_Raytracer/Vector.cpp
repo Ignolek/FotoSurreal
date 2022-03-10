@@ -3,7 +3,7 @@
 #include <string>
 #include <math.h>
 
-Vector::Vector() : x( 1 ), y( 1 ), z( 1 ) {}
+Vector::Vector() : x( 0 ), y( 0 ), z( 0 ) {}
 Vector::Vector(float x, float y, float z)
 {
 	this->x = x;
@@ -15,6 +15,12 @@ Vector::Vector(Vector p1, Vector p2)
 	this->x = p2.x - p1.x;
 	this->y = p2.y - p1.y;
 	this->z = p2.z - p1.z;
+}
+Vector::Vector(const Vector& v)
+{
+	this->x = v.x;
+	this->y = v.y;
+	this->z = v.z;
 }
 Vector::~Vector(){}
 
@@ -116,49 +122,127 @@ void Vector::mag(float f)
 }
 
 #pragma region Operators
-//Vector Vector::operator*(float scalar, Vector right)
-//{
-//	return Vector(right.x * scalar, right.y * scalar, right.z * scalar);
-//}
-//Vector Vector::operator*(Vector left, float scalar)
-//{
-//	return Vector(left.x * scalar, left.y * scalar, left.z * scalar);
-//}
-//Vector Vector::operator*(Vector left, Vector right)
-//{
-//	return Vector(left.x * right.x, left.y * right.y, left.z * right.z);
-//}
-//Vector Vector::operator+(Vector left, Vector right)
-//{
-//	return Vector(left.x + right.x, left.y + right.y, left.z + right.z);
-//}
-//Vector Vector::operator-(Vector left, Vector right)
-//{
-//	return Vector(left.x - right.x, left.y - right.y, left.z - right.z);
-//}
-//Vector Vector::operator-(Vector left)
-//{
-//	return Vector(-left.x, -left.y, -left.z);
-//}
-//bool Vector::operator==(Vector left, Vector right)
-//{
-//	return (left.x == right.x && left.y == right.y && left.z == right.z);
-//}
-//bool Vector::operator!=(Vector left, Vector right)
-//{
-//	return (left.x != right.x || left.y != right.y || left.z != right.z);
-//}
-//Vector Vector::operator/(Vector left, float scalar)
-//{
-//	Vector *vector = new Vector();
-//	// get the inverse of the scalar up front to avoid doing multiple divides later
-//	
-//	float inverse = 1.0f / scalar;
-//	vector->x = left.x * inverse;
-//	vector->y = left.y * inverse;
-//	vector->z = left.z * inverse;
-//	return *vector;
-//}
+Vector Vector::operator*(const float& f) const
+{
+	Vector result;
+	result.x = (this->x * f);
+	result.y = (this->y * f);
+	result.z = (this->z * f);
+	return result;
+}
+Vector Vector::operator*(const Vector& v) const
+{
+	Vector result;
+	result.x = (this->x * v.x);
+	result.y = (this->y * v.y);
+	result.z = (this->z * v.z);
+	return result;
+}
+
+Vector Vector::operator+(const float& f) const
+{
+	Vector result;
+	result.x = (this->x + f);
+	result.y = (this->y + f);
+	result.z = (this->z + f);
+	return result;
+}
+Vector Vector::operator+ (const Vector& v) const
+{
+	Vector result;
+	result.x = (this->x + v.x);
+	result.y = (this->y + v.y);
+	result.z = (this->z + v.z);
+	return result;
+}
+
+Vector Vector::operator-(const float& f) const
+{
+	Vector result;
+	result.x = (this->x - f);
+	result.y = (this->y - f);
+	result.z = (this->z - f);
+	return result;
+}
+Vector Vector::operator-(const Vector& v) const
+{
+	Vector result;
+	result.x = (this->x - v.x);
+	result.y = (this->y - v.y);
+	result.z = (this->z - v.z);
+	return result;
+}
+
+Vector Vector::operator/(const float& f) const
+{
+	Vector result;
+	if (f != 0)
+	{
+		result.x = (this->x / f);
+		result.y = (this->y / f);
+		result.z = (this->z / f);
+		return result;
+	}
+	else
+	{
+		std::cout << "Can't divide by 0 [operator/]" << std::endl;
+		return *this;
+	}
+}
+Vector Vector::operator/(const Vector& v) const
+{
+	Vector result;
+	if (v.x != 0 && v.y != 0 && v.z != 0)
+	{
+		result.x = (this->x / v.x);
+		result.y = (this->y / v.y);
+		result.z = (this->z / v.z);
+		return result;
+	}
+	else
+	{
+		std::cout << "Can't divide by 0 [operator/]" << std::endl;
+		return *this;
+	}
+}
+
+bool Vector::operator==(const Vector& v) const
+{
+	if (this->x == v.x && this->y == v.y && this->z == v.z)
+	{
+		return 1;
+	}
+	else
+		return 0;
+}
+bool Vector::operator==(const float& f) const
+{
+	if (this->x == f && this->y == f && this->z == f)
+	{
+		return 1;
+	}
+	else
+		return 0;
+}
+
+bool Vector::operator!=(const Vector& v) const
+{
+	if (this->x != v.x || this->y != v.y || this->z != v.z)
+	{
+		return 1;
+	}
+	else
+		return 0;
+}
+bool Vector::operator!=(const float& f) const
+{
+	if (this->x != f || this->y != f || this->z != f)
+	{
+		return 1;
+	}
+	else
+		return 0;
+}
 #pragma endregion
 
 Vector Vector::reflect(Vector normal)
