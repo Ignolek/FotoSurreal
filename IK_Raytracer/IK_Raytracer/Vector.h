@@ -16,7 +16,7 @@ public:
 	Vector normalizeProduct();
 	float length();
 	float lengthSquared();
-	float dot(Vector v);
+	Vector dot(Vector v);
 	Vector cross(Vector v);
 	void negate();
 	void add(Vector v);

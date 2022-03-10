@@ -69,9 +69,14 @@ float Vector::lengthSquared()
 				   pow(this->z, 2));
 }
 
-float Vector::dot(Vector v)
+// Previous version was float Vector::dot(Vector v)
+Vector Vector::dot(Vector v)
 {
-	return (this->x * v.x + this->y * v.y + this->z * v.z);
+	Vector result;
+	result.x = this->x * v.x;
+	result.y = this->y * v.y;
+	result.z = this->z * v.z;
+	return result;
 }
 
 Vector Vector::cross(Vector v)
@@ -247,7 +252,9 @@ bool Vector::operator!=(const float& f) const
 
 Vector Vector::reflect(Vector normal)
 {
-	return normal;
+	// It can possibly be implemented not as intended -- got to check it in future
+	return *this - (this->dot(normal) * normal.x * 2);
+
 	//return this - (2 * this->dot(normal) * normal.x);
 }
 Vector Vector::magProduct(Vector v, float f)
