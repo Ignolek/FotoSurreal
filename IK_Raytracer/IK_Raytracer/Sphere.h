@@ -6,11 +6,11 @@ class Sphere
 {
 private:
 	Vector coords;
-	float r;
+	float radius;
 public:
 	Sphere();
 	Sphere(Vector coordinates, float r);
 
-	int intersect(Ray& a_Ray, float& a_Dist);
+	float* intersect(Ray& a_Ray, float& a_Dist);
 };
 

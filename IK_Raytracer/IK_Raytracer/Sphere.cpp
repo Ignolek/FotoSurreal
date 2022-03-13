@@ -1,44 +1,44 @@
 #include "Sphere.h"
 
-Sphere::Sphere() : coords(0,0,0), r(0) {}
+Sphere::Sphere() : coords(0,0,0), radius(0) {}
 
 Sphere::Sphere(Vector coordinates, float r)
 {
 	this->coords = coordinates;
-	this->r = r;
+	this->radius = r;
 }
 
-int Sphere::intersect(Ray& a_Ray, float& a_Dist)
+float* Sphere::intersect(Ray& ray, float& dist)
 {
-	Vector v = a_Ray.getOrigin() - this->coords;
-	float b = -v.dotProduct(a_Ray.getDirection());
-	float det = (b * b) - v.dotProduct(v) + this->r;
-	int retval = 0;
-	if (det > 0)
+	//obliczamy równanie kwadratowe
+	Vector v = ray.getOrigin() - this->coords;
+	float a = ray.getDirection().dotProduct(ray.getDirection());
+	float b = 2.0 * v.dotProduct(ray.getDirection());
+	float c = v.dotProduct(v) - (this->radius * this->radius);
+	float u[2];
+	//obliczamy wyró¿nik kwadratowy
+	float discriminant = b * b - 4 * a * c;
+	//zwracamy lokacje przeciêcia
+	if (discriminant > 0.0)
 	{
-		det = sqrtf(det);
-		float i1 = b - det;
-		float i2 = b + det;
-		if (i2 > 0)
-		{
-			if (i1 < 0)
-			{
-				if (i2 < a_Dist)
-				{
-					a_Dist = i2;
-					retval = 1;
-					// retval = INPRIM; what's inprim?
-				}
-			}
-			else
-			{
-				if (i1 < a_Dist)
-				{
-					a_Dist = i1;
-					retval = 2;
-				}
-			}
-		}
+		const float root = sqrt(discriminant);
+		const float denom = 2.0 * a;
+
+		u[0] = (-b + root) / denom;
+		u[1] = (-b - root) / denom;
 	}
-	return retval;
+	else if (discriminant = 0.0)
+	{
+		const float denom = 2.0 * a;
+
+		u[0] = (-b) / denom;
+		u[1] = 0.0;
+	}
+	else if (discriminant < 0.0)
+	{
+		//zwracamy wartoœæ null kiedy nie wystêpuje przeciêcie ze sfer¹
+		return nullptr;
+	}
+
+	return u;
 }
