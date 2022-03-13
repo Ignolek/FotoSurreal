@@ -6,3 +6,18 @@ Ray::Ray(Vector o, Vector d)
 	direction = d;
 }
 Ray::~Ray(){}
+
+Vector Ray::getOrigin()
+{
+	return origin;
+}
+
+Vector Ray::getDirection()
+{
+	return direction;
+}
+
+Vector Ray::getDestination()
+{
+	return destination;
+}

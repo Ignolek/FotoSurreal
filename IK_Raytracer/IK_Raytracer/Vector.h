@@ -17,6 +17,7 @@ public:
 	float length();
 	float lengthSquared();
 	Vector dot(Vector v);
+	float dotProduct(Vector v);
 	Vector cross(Vector v);
 	void negate();
 	void add(Vector v);

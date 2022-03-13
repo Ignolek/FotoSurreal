@@ -9,5 +9,9 @@ public:
 	Ray();
 	Ray(Vector o, Vector d);
 	~Ray();
+
+	Vector getOrigin();
+	Vector getDirection();
+	Vector getDestination();
 };
 
