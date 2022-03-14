@@ -2,9 +2,9 @@
 #include <string>
 class Vector
 {
+public:
 	float x, y, z;
 
-public:
 	Vector();
 	Vector(float x, float y, float z);
 	Vector(Vector p1, Vector p2);
