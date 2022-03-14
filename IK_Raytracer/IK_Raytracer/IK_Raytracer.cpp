@@ -1,5 +1,8 @@
 ﻿#include <iostream>
 #include "Vector.h"
+#include "Sphere.h"
+#include "Plane.h"
+#include "Ray.h"
 
 int main()
 {
@@ -14,4 +17,30 @@ int main()
     std::cout << "Defined Vector constructor has made: " + definedVector->toString() << std::endl;
     std::cout << "Defined Vector2 constructor has made: " + definedVector2->toString() << std::endl;
     std::cout << "Default Vector constructor has made: " + defaultVector->toString() << std::endl;
+
+    //Zdefiniować sferę S o środku w punkcie (0,0,0) i promieniu 10.
+    Sphere S(Vector(0,0,0),10);
+
+    //Zdefiniować promień R1 o początku w punkcie(0, 0, -20) i skierowany w środek kuli.
+    Ray R1(Vector(0, 0, -20), Vector(0, 0, 20));
+
+    //Zdefiniować promień R2 o początku w tym samym punkcie, co R1, skierowany równolegle do osi Y. ??
+    Ray R2(Vector(0, 0, -20), Vector(0, 1, 0));
+
+    //Proszę sprawdzić, czy istnieje przecięcie sfery S z promieniami R1 oraz R2. Wynik w postaci współrzędnych punktu przecięcia należy wyświetlić.
+    std::cout << S.intersect(R1)[0] << std::endl;
+    std::cout << S.intersect(R1)[1] << std::endl;
+
+    std::cout << S.intersect(R2)[0] << std::endl;
+    std::cout << S.intersect(R2)[1] << std::endl;
+
+    //Proszę zdefiniować dowolny promień R3, tak aby przecinał on sferę S w dokładnie jednym punkcie.Podać współrzędne punktu przecięcia.
+
+    Ray R3(Vector(0, 0, -20), Vector(0, 2.88676, 5));
+
+    std::cout << S.intersect(R3)[0] << std::endl;
+    std::cout << S.intersect(R3)[1] << std::endl;
+
+
+    return 0;
 }
