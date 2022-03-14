@@ -8,7 +8,7 @@ Sphere::Sphere(Vector coordinates, float r)
 	this->radius = r;
 }
 
-float* Sphere::intersect(Ray& ray, float& dist)
+float* Sphere::intersect(Ray& ray)
 {
 	//obliczamy równanie kwadratowe
 	Vector v = ray.getOrigin() - this->coords;
