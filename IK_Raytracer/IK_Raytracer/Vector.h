@@ -43,6 +43,7 @@ public:
 	
 	bool operator!=(const Vector&) const;
 	bool operator!=(const float&) const;
+
 #pragma endregion
 
 	Vector reflect(Vector normal);

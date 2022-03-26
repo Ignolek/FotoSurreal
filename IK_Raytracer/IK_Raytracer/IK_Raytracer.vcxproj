@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="IK_Raytracer.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="LightIntensity.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="LightIntensity.h" />
     <ClInclude Include="Plane.h" />

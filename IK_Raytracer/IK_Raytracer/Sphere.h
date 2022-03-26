@@ -11,6 +11,6 @@ public:
 	Sphere();
 	Sphere(Vector coordinates, float r);
 
-	float* intersect(Ray& a_Ray);
+	Vector* intersect(Ray& a_Ray);
 };
 
