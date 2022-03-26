@@ -3,6 +3,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Ray.h"
+#include "Image.h"
 
 int main()
 {
@@ -47,6 +48,13 @@ int main()
 
     //8. Proszę znaleźć punkt przecięcia płaszczyzny P z promieniem R2
     std::cout << P1.intersectLine(R2.getOrigin(), R2.getDirection()).toString();
+
+
+    Image* blank = new Image(500, 500, 3);
+
+    blank->FillColor(255, 0, 0);
+
+    blank->Write("obrazek.png");
 
     return 0;
 }
