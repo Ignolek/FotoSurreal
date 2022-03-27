@@ -54,10 +54,11 @@ int main()
     int scrWidth = 500;
     int scrHeight = 500;
     Image* blank = new Image(scrWidth, scrHeight, 3);
+    blank->FillColor(0, 0, 0);
 
     // Engine objects
     Camera* cam = new Camera();
-    Sphere* sphere = new Sphere(Vector(0, 0, 0), 1.0f);
+    Sphere* sphere = new Sphere(Vector(240.0f, 240.0f, 2.0f), 35.5f);
     LightIntensity* sphereColor = new LightIntensity(250, 0, 0);
     LightIntensity* backgroundColor = new LightIntensity(50, 50, 150);
 
@@ -67,10 +68,11 @@ int main()
         for (int y = 0; y < scrHeight; y++)
         {
             Ray ray = cam->render(scrWidth, scrHeight, x, y, 2.0f);
-            Vector* intersection = sphere->intersect(ray); //nullptr;
+            //Vector* intersection = sphere->intersect(ray); //nullptr;
             //intersection = sphere->intersect(ray);
+            //Ray ray(Vector(x, y, 0), Vector(0, 0, 1));
 
-            if (intersection != NULL)
+            if (sphere->hitRay(ray))
             {
                 blank->SetPixel(x, y, *sphereColor);
             }

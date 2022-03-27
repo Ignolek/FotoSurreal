@@ -46,3 +46,13 @@ Vector* Sphere::intersect(Ray& ray)
 
 	return crossCoord;
 }
+
+bool Sphere::hitRay(Ray& ray)
+{
+	Vector oc = ray.getOrigin() - this->coords;
+	float a = ray.getDirection().dotProduct(ray.getDirection());
+	float b = 2.0 * oc.dotProduct(ray.getDirection());
+	float c = oc.dotProduct(oc) - this->radius * this->radius;
+	float discriminant = b * b - 4 * a * c;
+	return (discriminant > 0);
+}

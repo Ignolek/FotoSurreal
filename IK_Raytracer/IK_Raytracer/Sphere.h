@@ -12,5 +12,6 @@ public:
 	Sphere(Vector coordinates, float r);
 
 	Vector* intersect(Ray& a_Ray);
+	bool hitRay(Ray& ray);
 };
 

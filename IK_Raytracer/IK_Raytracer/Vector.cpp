@@ -85,7 +85,7 @@ float Vector::dotProduct(Vector v)
 	result.x = this->x * v.x;
 	result.y = this->y * v.y;
 	result.z = this->z * v.z;
-	return result.x + result.y + result.z;
+	return (result.x + result.y + result.z);
 }
 
 Vector Vector::cross(Vector v)
