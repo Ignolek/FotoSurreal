@@ -8,8 +8,12 @@
 #include "LightIntensity.h"
 #include "vec3.h"
 
-vec3 color(const Ray& r)
+vec3 color(Ray& r, Sphere sphere)
 {
+    if (sphere.hitRay(r) == true)
+    {
+        return vec3(1, 0, 0);
+    }
     vec3 unitDirection = unit_vector(r.direction());
     float t = 0.5 * (unitDirection.y() + 1.0);
     return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
@@ -17,7 +21,6 @@ vec3 color(const Ray& r)
 
 int main()
 {
-  
     int scrWidth = 200;
     int scrHeight = 100;
     vec3 lowerLefrCorner(-2.0, -1.0, -1.0);
@@ -28,6 +31,7 @@ int main()
     Image* blank = new Image(scrWidth, scrHeight, 3);
 
     LightIntensity lColor(220, 0, 0);
+    Sphere sphere(vec3(0, 0, -1), 0.5);
 
     for (int j = scrHeight - 1; j >= 0; j--)
     {
@@ -37,7 +41,7 @@ int main()
             float v = float(j) / float(scrHeight);
 
             Ray r(origin, lowerLefrCorner + u * horizontal + v * vertical);
-            vec3 col = color(r);
+            vec3 col = color(r, sphere);
 
             int iR = int(255.99 * col[0]);
             int iG = int(255.99 * col[1]);
