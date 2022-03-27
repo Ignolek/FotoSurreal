@@ -1,23 +1,40 @@
 #include "Ray.h"
-Ray::Ray() : origin(Vector::Vector()), direction(Vector::Vector()), distance(0.0f){}
-Ray::Ray(Vector o, Vector d)
+Ray::Ray(const vec3& a, const vec3& b)
 {
-	origin = o;
-	direction = d;
+	A = a;
+	B = b;
 }
-Ray::~Ray(){}
-
-Vector Ray::getOrigin()
+vec3 Ray::origin() const
 {
-	return origin;
+	return A;
 }
-
-Vector Ray::getDirection()
+vec3 Ray::direction() const
 {
-	return direction;
+	return B;
 }
-
-Vector Ray::getDestination()
+vec3 Ray::pointAtParameter(float t) const
 {
-	return destination;
+	return A + t * B;
 }
+//Ray::Ray() : origin(Vector::Vector()), direction(Vector::Vector()), distance(0.0f){}
+//Ray::Ray(Vector o, Vector d)
+//{
+//	origin = o;
+//	direction = d;
+//}
+//Ray::~Ray(){}
+//
+//Vector Ray::getOrigin()
+//{
+//	return origin;
+//}
+//
+//Vector Ray::getDirection()
+//{
+//	return direction;
+//}
+//
+//Vector Ray::getDestination()
+//{
+//	return destination;
+//}

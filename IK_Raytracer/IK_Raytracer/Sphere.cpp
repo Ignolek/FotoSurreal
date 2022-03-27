@@ -55,4 +55,3 @@ bool Sphere::hitRay(Ray& ray)
 	float c = oc.dotProduct(oc) - this->radius * this->radius;
 	float discriminant = b * b - 4 * a * c;
 	return (discriminant > 0);
-}
