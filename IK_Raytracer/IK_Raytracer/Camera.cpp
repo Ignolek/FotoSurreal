@@ -14,13 +14,3 @@ Camera::Camera(Vector _position, Vector _target, float _nearPlane, float _farPla
 }
 
 Camera::~Camera(){}
-
-//Ray Camera::render(float scrWidth, float scrHeight, int currentX, int currentY, float pixelSize)
-//{
-//	float pixelCenterX = -1.0f + (currentX + 0.5f) * (pixelSize / scrWidth); 
-//	float pixelCenterY = 1.0f - (currentY + 0.5f) * (pixelSize / scrHeight);
-//
-//	Ray* ray = new Ray(Vector(0, 0, 1), Vector(pixelCenterX, pixelCenterY, 0));
-//
-//	return *ray;
-//}
