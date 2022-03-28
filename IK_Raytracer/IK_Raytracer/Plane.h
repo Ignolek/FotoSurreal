@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector.h"
+#include "vec3.h"
 
 class Plane
 {
@@ -11,6 +11,6 @@ public:
     Plane(const Plane& P);
     Plane(float a, float b, float c, float d);
 
-    Vector intersectLine(const Vector V1, const Vector V2) const;        //determines the intersect of the line defined by the points V1 and V2 with the plane.
+    vec3 intersectLine(const vec3 V1, const vec3 V2) const;        //determines the intersect of the line defined by the points V1 and V2 with the plane.
 };
 

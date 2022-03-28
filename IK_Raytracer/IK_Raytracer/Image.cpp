@@ -119,23 +119,23 @@ void Image::SetPixel(int x, int y, LightIntensity color)
 	this->data = buf_data;
 }
 
-void Image::DrawTriangle(Vector p1, Vector p2, Vector p3, LightIntensity color)
-{
-	for (int xi = 0; xi < w; xi++) {
-		for (int yi = 0; yi < h; yi++)
-		{
-			if (xi > minx && xi < maxx && yi > miny && yi < maxy)
-			{
-				if ((((p1.x - p2.x) * (yi - p1.y) - (p1.y - p2.y) * (xi - p1.x)) > 0) &&
-					(((p2.x - p3.x) * (yi - p2.y) - (p2.y - p3.y) * (xi - p2.x)) > 0) &&
-					(((p3.x - p1.x) * (yi - p3.y) - (p3.y - p1.y) * (xi - p3.x)) > 0))
-				{
-					if (tl3 == true && tl2 == true)
-					{
-						this->SetPixel(xi, yi, color);
-					}
-				}
-			}
-		}
-	}
-}
+//void Image::DrawTriangle(Vector p1, Vector p2, Vector p3, LightIntensity color)
+//{
+//	for (int xi = 0; xi < w; xi++) {
+//		for (int yi = 0; yi < h; yi++)
+//		{
+//			if (xi > minx && xi < maxx && yi > miny && yi < maxy)
+//			{
+//				if ((((p1.x - p2.x) * (yi - p1.y) - (p1.y - p2.y) * (xi - p1.x)) > 0) &&
+//					(((p2.x - p3.x) * (yi - p2.y) - (p2.y - p3.y) * (xi - p2.x)) > 0) &&
+//					(((p3.x - p1.x) * (yi - p3.y) - (p3.y - p1.y) * (xi - p3.x)) > 0))
+//				{
+//					if (tl3 == true && tl2 == true)
+//					{
+//						this->SetPixel(xi, yi, color);
+//					}
+//				}
+//			}
+//		}
+//	}
+//}

@@ -35,6 +35,6 @@ public:
 	Image& FillColor(LightIntensity color);
 
 	void SetPixel(int x, int y, LightIntensity color);
-	void DrawTriangle(Vector p1, Vector p2, Vector p3, LightIntensity color);
+	//void DrawTriangle(Vector p1, Vector p2, Vector p3, LightIntensity color);
 
 };
