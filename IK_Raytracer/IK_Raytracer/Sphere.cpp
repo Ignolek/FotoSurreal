@@ -1,12 +1,12 @@
-#include "Sphere.h"
+//#include "Sphere.h"
 
-Sphere::Sphere() : coords(0,0,0), radius(0) {}
+/*Sphere::Sphere() : coords(0, 0, 0), radius(0) {}
 
 Sphere::Sphere(vec3 coordinates, float r)
 {
 	this->coords = coordinates;
 	this->radius = r;
-}
+}*/
 
 //vec3* Sphere::intersect(Ray& ray)
 //{
@@ -47,12 +47,12 @@ Sphere::Sphere(vec3 coordinates, float r)
 //	return crossCoord;
 //}
 
-bool Sphere::hitRay(Ray& ray)
-{
-	vec3 oc = ray.origin() - this->coords;
-	float a = dot(ray.direction(), ray.direction());
-	float b = 2.0 * dot(oc, ray.direction());
-	float c = dot(oc, oc) - this->radius * this->radius;
-	float discriminant = b * b - 4 * a * c;
-	return (discriminant > 0);
-}
+//bool Sphere::hitRay(Ray& ray)
+//{
+//	vec3 oc = ray.origin() - this->coords;
+//	float a = dot(ray.direction(), ray.direction());
+//	float b = 2.0 * dot(oc, ray.direction());
+//	float c = dot(oc, oc) - this->radius * this->radius;
+//	float discriminant = b * b - 4 * a * c;
+//	return (discriminant > 0);
+//}
