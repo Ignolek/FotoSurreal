@@ -13,6 +13,22 @@ public:
 	}
 	Camera(vec3 _lowerLeftCorner, vec3 _horizontal, vec3 _vertical, vec3 _origin)
 		: lowerLeftCorner(_lowerLeftCorner), horizontal(_horizontal), vertical(_vertical), origin(_origin){}
+	
+	Camera(vec3 lookFrom, vec3 lookAt, vec3 vUp, float vFov, float aspect)
+	{
+		vec3 u, v, w;
+		float theta = vFov * 3.1415 / 180;
+		float halfHeight = tan(theta / 2);
+		float halfWidth = aspect * halfHeight;
+		origin = lookFrom;
+		w = unit_vector(lookFrom - lookAt);
+		u = unit_vector(cross(vUp, w));
+		v = cross(w, u);
+		lowerLeftCorner = vec3(-halfWidth, -halfHeight, -1.0);
+		lowerLeftCorner = origin - halfWidth * u - halfHeight * v - w;
+		horizontal = 2 * halfWidth * u;
+		vertical = 2 * halfHeight * v;
+	}
 	~Camera(){}
 	
 	Ray getRay(float u, float v)

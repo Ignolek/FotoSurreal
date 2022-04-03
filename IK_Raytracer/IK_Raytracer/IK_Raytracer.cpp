@@ -27,7 +27,7 @@ int main()
 {
     int scrWidth = 1920 / 4;
     int scrHeight = 1080 / 4;
-    int deepth = 100;
+    int depth = 100;
     vec3 lowerLefrCorner(-2.0, -1.0, -1.0);
     vec3 horizontal(4.0, 0.0, 0.0);
     vec3 vertical(0.0, 2.0, 0.0);
@@ -51,22 +51,23 @@ int main()
     //list[4] = new Plane(0, -2, 1, -1);
     Hitable* world = new HitableList(list, 3);
     Camera cam;
+    Camera cam2(vec3(-2, 2, 1), vec3(0, 0, -1), vec3(0, 1, 0), 90, float(scrWidth) / float(scrHeight));
 
     for (int j = -(scrHeight / 2); j < scrHeight / 2; j++)
     {
         for (int i = -(scrWidth / 2); i < scrWidth / 2; i++)
         {
             vec3 col(0, 0, 0);
-            for (int s = 0; s < deepth; s++)
+            for (int s = 0; s < depth; s++)
             {
                 float u = float(i) / float(scrWidth);
                 float v = float(j) / float(scrHeight);
-                Ray r = cam.getRay(u, v);
+                Ray r = cam2.getRay(u, v);
                 vec3 p = r.pointAtParameter(2.0);
                 col += color(r, world);
             }
            
-            col /= float(deepth);
+            col /= float(depth);
 
             int iR = int(255.99 * col[0]);
             int iG = int(255.99 * col[1]);
