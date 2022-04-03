@@ -30,10 +30,10 @@ int main()
     int scrWidth = 1920 / 4;
     int scrHeight = 1080 / 4;
     int depth = 100;
-    vec3 lowerLefrCorner(-2.0, -1.0, -1.0);
+   /* vec3 lowerLefrCorner(-2.0, -1.0, -1.0);
     vec3 horizontal(4.0, 0.0, 0.0);
     vec3 vertical(0.0, 2.0, 0.0);
-    vec3 origin(0.0, 0.0, 0.0);
+    vec3 origin(0.0, 0.0, 0.0);*/
 
     Image* blank = new Image(scrWidth, scrHeight, 3);
 
@@ -42,9 +42,9 @@ int main()
 
     
     Hitable* list[3];
-    list[0] = new Sphere(vec3(0.3, 0, -1), 0.5);
+    list[0] = new Sphere(vec3(0.5, 0, -1), 0.5);
     list[1] = new Sphere(vec3(0, -100.5, -1), 100);
-    list[2] = new Sphere(vec3(0, 0, -0.8), 0.3);
+    list[2] = new Sphere(vec3(-0.5, 0, -4), 0.5);
     //list[2] = new Plane(vec3(0, 0, -1), vec3(0.2, 0.3, -1), vec3(0.3, 0.3, -1));
     // 
     //list[1] = new Plane(1,0,1,-1);
@@ -53,7 +53,12 @@ int main()
     //list[4] = new Plane(0, -2, 1, -1);
     Hitable* world = new HitableList(list, 3);
     Camera cam;
-    Camera cam2(vec3(-2, 2, 1), vec3(0, 0, -1), vec3(0, 1, 0), 90, float(scrWidth) / float(scrHeight));
+    bool ortho = false;
+    Ray r = Ray();
+
+    std::cout << "Do u want to use orthogonal camera? [0 -- no, 1 -- yes]: ";
+    std::cin >> ortho;
+    //Camera cam2(vec3(-2, 2, 1), vec3(0, 0, -1), vec3(0, 1, 0), 90, float(scrWidth) / float(scrHeight));
 
     // obtain a seed from the system clock:
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -71,7 +76,14 @@ int main()
             {
                 float u = float(i + distribution(generator)) / float(scrWidth);
                 float v = float(j + distribution(generator)) / float(scrHeight);
-                Ray r = cam2.getRay(u, v);
+                if (ortho)
+                {
+                   r = cam.getOrthoRay(u, v);
+                }
+                else
+                {
+                   r = cam.getRay(u, v);
+                }
                 vec3 p = r.pointAtParameter(2.0);
                 col += color(r, world);
             }
