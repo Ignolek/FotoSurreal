@@ -1,4 +1,6 @@
 ﻿#include <iostream>
+#include <random>
+#include <chrono>
 #include "vec3.h"
 #include "Sphere.h"
 #include "Plane.h"
@@ -38,7 +40,7 @@ int main()
     LightIntensity lColor(220, 0, 0);
     Sphere sphere(vec3(0, 0, -1), 0.5);
 
-
+    
     Hitable* list[3];
     list[0] = new Sphere(vec3(0.3, 0, -1), 0.5);
     list[1] = new Sphere(vec3(0, -100.5, -1), 100);
@@ -53,6 +55,13 @@ int main()
     Camera cam;
     Camera cam2(vec3(-2, 2, 1), vec3(0, 0, -1), vec3(0, 1, 0), 90, float(scrWidth) / float(scrHeight));
 
+    // obtain a seed from the system clock:
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+    std::default_random_engine generator(seed);
+
+    std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
     for (int j = -(scrHeight / 2); j < scrHeight / 2; j++)
     {
         for (int i = -(scrWidth / 2); i < scrWidth / 2; i++)
@@ -60,8 +69,8 @@ int main()
             vec3 col(0, 0, 0);
             for (int s = 0; s < depth; s++)
             {
-                float u = float(i) / float(scrWidth);
-                float v = float(j) / float(scrHeight);
+                float u = float(i + distribution(generator)) / float(scrWidth);
+                float v = float(j + distribution(generator)) / float(scrHeight);
                 Ray r = cam2.getRay(u, v);
                 vec3 p = r.pointAtParameter(2.0);
                 col += color(r, world);
@@ -78,15 +87,6 @@ int main()
             blank->SetPixel(i, j, lColor);
         }
     }
-     
-    //for (int j = -(scrHeight / 2); j < scrHeight / 2; j++)
-    //{
-    //    for (int i = -(scrWidth / 2); i < scrWidth / 2; i++)
-    //    {
-    //        blank->SetPixel(i, j, LightIntensity(100, 50, 200));
-    //    }
-    //}
-    //blank->FillColor(LightIntensity(100, 50, 200));
 
     blank->Write("obrazek.bmp");
 
