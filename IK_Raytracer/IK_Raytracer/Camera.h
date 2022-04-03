@@ -6,7 +6,7 @@ public:
 	vec3 lowerLeftCorner, horizontal, vertical, origin;
 	Camera()
 	{
-		lowerLeftCorner = vec3(-2.0, -1.0f, -1.0f);
+		lowerLeftCorner = vec3(0.0f, 0.0f, -1.0f);
 		horizontal = vec3(4.0f, 0.0f, 0.0f);
 		vertical = vec3(0.0f, 2.0f, 0.0f);
 		origin = vec3(0.0f, 0.0f, 0.0f);

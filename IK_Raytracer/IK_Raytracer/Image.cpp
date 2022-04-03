@@ -112,9 +112,12 @@ void Image::SetPixel(int x, int y, LightIntensity color)
 {
 	uint8_t* buf_data = this->data;
 
-	buf_data[this->channels * (y * this->w + x) + 0] = color.getRed();
-	buf_data[this->channels * (y * this->w + x) + 1] = color.getGreen();
-	buf_data[this->channels * (y * this->w + x) + 2] = color.getBlue();
+	int temp_x = (x + this->w / 2 );
+	int temp_y = (-y + this->h / 2 )-1;
+
+	buf_data[this->channels * (temp_y * this->w + temp_x) + 0] = color.getRed();
+	buf_data[this->channels * (temp_y * this->w + temp_x) + 1] = color.getGreen();
+	buf_data[this->channels * (temp_y * this->w + temp_x) + 2] = color.getBlue();
 
 	this->data = buf_data;
 }

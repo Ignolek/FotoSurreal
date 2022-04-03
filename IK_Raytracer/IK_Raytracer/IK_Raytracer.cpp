@@ -39,20 +39,22 @@ int main()
     Sphere sphere(vec3(0, 0, -1), 0.5);
 
 
-    Hitable* list[5];
-    list[0] = new Sphere(vec3(0, 0, -1), 0.5);
-    //list[1] = new Sphere(vec3(0, -100.5, -1), 100);
+    Hitable* list[3];
+    list[0] = new Sphere(vec3(0.3, 0, -1), 0.5);
+    list[1] = new Sphere(vec3(0, -100.5, -1), 100);
+    list[2] = new Sphere(vec3(0, 0, -0.8), 0.3);
     //list[2] = new Plane(vec3(0, 0, -1), vec3(0.2, 0.3, -1), vec3(0.3, 0.3, -1));
-    list[1] = new Plane(1,0,1,-1);
-    list[2] = new Plane(0, 2, 1, -1);
-    list[3] = new Plane(-1, 0, 1, -1);
-    list[4] = new Plane(0, -2, 1, -1);
-    Hitable* world = new HitableList(list, 5);
+    // 
+    //list[1] = new Plane(1,0,1,-1);
+    //list[2] = new Plane(0, 2, 1, -1);
+    //list[3] = new Plane(-1, 0, 1, -1);
+    //list[4] = new Plane(0, -2, 1, -1);
+    Hitable* world = new HitableList(list, 3);
     Camera cam;
 
-    for (int j = scrHeight - 1; j >= 0; j--)
+    for (int j = -(scrHeight / 2); j < scrHeight / 2; j++)
     {
-        for (int i = 0; i < scrWidth; i++)
+        for (int i = -(scrWidth / 2); i < scrWidth / 2; i++)
         {
             vec3 col(0, 0, 0);
             for (int s = 0; s < deepth; s++)
@@ -75,6 +77,16 @@ int main()
             blank->SetPixel(i, j, lColor);
         }
     }
+     
+    //for (int j = -(scrHeight / 2); j < scrHeight / 2; j++)
+    //{
+    //    for (int i = -(scrWidth / 2); i < scrWidth / 2; i++)
+    //    {
+    //        blank->SetPixel(i, j, LightIntensity(100, 50, 200));
+    //    }
+    //}
+    //blank->FillColor(LightIntensity(100, 50, 200));
+
     blank->Write("obrazek.bmp");
 
     return 0;
