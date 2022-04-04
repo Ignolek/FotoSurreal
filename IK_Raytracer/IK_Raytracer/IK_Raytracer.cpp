@@ -26,39 +26,45 @@ vec3 color(const Ray& r, Hitable *world)
 
 int main()
 {
-    int scrWidth = 200;
-    int scrHeight = 100;
-    int deepth = 1;
+    int scrWidth = 2000;
+    int scrHeight = 1000;
+    int depth = 1;
 
     Image* blank = new Image(scrWidth, scrHeight, 3);
 
     LightIntensity lColor(220, 0, 0);
     Sphere sphere(vec3(0, 0, -1), 0.5);
     Hitable* list[3];
-    list[0] = new Sphere(vec3(0.5, 0, -1), 0.5);
+    list[0] = new Sphere(vec3(0.5, 0, -1), 0.25);
     list[1] = new Sphere(vec3(0, -100.5, -1), 100);
-    list[2] = new Sphere(vec3(-0.5, 0, -4), 0.5);
+    list[2] = new Sphere(vec3(-0.5, 0, -4), 0.25);
     Hitable* world = new HitableList(list, 3);
-    Camera cam(vec3(0, 0, 0), vec3(0.0, 0, -1), vec3(0, 1, 0), 90, float(scrWidth)/float(scrHeight));
+    Camera cam(vec3(0, 0, 0), vec3(0.0, 0, -1), vec3(0, -1, 0), 90, float(scrWidth)/float(scrHeight));
     bool ortho = false;
     std::cout << "Do You want to use orthogonal camera? [0 -- no, 1 -- yes]: ";
     std::cin >> ortho;
+
+    float pixelWidth = 2.0f / scrWidth;
+    float pixelHeight = 2.0f / scrHeight;
 
     for (int i = 0; i < scrWidth; i++)
     {
         for (int j = 0; j < scrHeight; j++)
         {
             vec3 col(0, 0, 0);
-            for (int s = 0; s < deepth; s++)
+            for (int s = 0; s < depth; s++)
             {
                 float u = float(i) / float(scrWidth);
                 float v = float(j) / float(scrHeight);
+
+                float pixelCenterX = -1.0f + (i + 0.5f) * u;
+                float pixelCenterY = 1.0f - (j + 0.5f) * v;
+
                 Ray r = cam.getRay(u, v, ortho);
-                vec3 p = r.pointAtParameter(2.0);
                 col += color(r, world);
             }
            
-            col /= float(deepth);
+            col /= float(depth);
 
             int iR = int(255.99 * col[0]);
             int iG = int(255.99 * col[1]);

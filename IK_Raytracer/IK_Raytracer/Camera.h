@@ -34,7 +34,7 @@ public:
 	Ray getRay(float u, float v, bool ortho)
 	{
 		if (ortho)
-			return Ray(vec3(origin.e[0] + u, origin.e[1] + v, origin.e[2]), vec3(origin.e[0] + u, origin.e[1] + v, origin.e[2] - 40000));
+			return Ray(vec3(u, v, 1), vec3(u, v, -4000));
 		else
 			return Ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
 	}
