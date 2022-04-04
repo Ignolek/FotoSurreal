@@ -57,6 +57,14 @@ int main()
                 float u = float(i) / float(scrWidth);
                 float v = float(j) / float(scrHeight);
 
+                float uMin = (-1.f + i * pixelWidth) * (90*(float(scrWidth) / float(scrHeight)));
+                float vMin = (1.f - (j + 1.0f) * pixelHeight) * 90;
+
+                float uMax = (-1.f + (i + 1.0f) * pixelWidth) * (90 * (float(scrWidth) / float(scrHeight)));
+                float vMax = (1.f - j * pixelHeight) * 90;
+
+                //LightIntensity color = GetColorByAntialiasing(world, uMin, uMax, vMin, vMax, i, j, 1.0f, vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
+
                 float pixelCenterX = -1.0f + (i + 0.5f) * u;
                 float pixelCenterY = 1.0f - (j + 0.5f) * v;
 
