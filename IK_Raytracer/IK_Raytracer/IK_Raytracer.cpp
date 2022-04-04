@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 #include "vec3.h"
 #include "Sphere.h"
 #include "Plane.h"
@@ -25,34 +26,34 @@ vec3 color(const Ray& r, Hitable *world)
 
 int main()
 {
-    int scrWidth = 1920 / 4;
-    int scrHeight = 1080 / 4;
-    int deepth = 100;
-    vec3 lowerLefrCorner(-2.0, -1.0, -1.0);
-    vec3 horizontal(4.0, 0.0, 0.0);
-    vec3 vertical(0.0, 2.0, 0.0);
-    vec3 origin(0.0, 0.0, 0.0);
+    int scrWidth = 200;
+    int scrHeight = 100;
+    int deepth = 1;
 
     Image* blank = new Image(scrWidth, scrHeight, 3);
 
     LightIntensity lColor(220, 0, 0);
     Sphere sphere(vec3(0, 0, -1), 0.5);
-    Hitable* list[2];
-    list[0] = new Sphere(vec3(0, 0, -1), 0.5);
+    Hitable* list[3];
+    list[0] = new Sphere(vec3(0.5, 0, -1), 0.5);
     list[1] = new Sphere(vec3(0, -100.5, -1), 100);
-    Hitable* world = new HitableList(list, 2);
-    Camera cam;
+    list[2] = new Sphere(vec3(-0.5, 0, -4), 0.5);
+    Hitable* world = new HitableList(list, 3);
+    Camera cam(vec3(0, 0, 0), vec3(0.0, 0, -1), vec3(0, 1, 0), 90, float(scrWidth)/float(scrHeight));
+    bool ortho = false;
+    std::cout << "Do You want to use orthogonal camera? [0 -- no, 1 -- yes]: ";
+    std::cin >> ortho;
 
-    for (int j = scrHeight - 1; j >= 0; j--)
+    for (int i = 0; i < scrWidth; i++)
     {
-        for (int i = 0; i < scrWidth; i++)
+        for (int j = 0; j < scrHeight; j++)
         {
             vec3 col(0, 0, 0);
             for (int s = 0; s < deepth; s++)
             {
                 float u = float(i) / float(scrWidth);
                 float v = float(j) / float(scrHeight);
-                Ray r = cam.getRay(u, v);
+                Ray r = cam.getRay(u, v, ortho);
                 vec3 p = r.pointAtParameter(2.0);
                 col += color(r, world);
             }
@@ -64,7 +65,6 @@ int main()
             int iB = int(255.99 * col[2]);
 
             lColor(iR, iG, iB);
-            
             blank->SetPixel(i, j, lColor);
         }
     }
