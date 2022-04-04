@@ -76,14 +76,9 @@ int main()
             {
                 float u = float(i + distribution(generator)) / float(scrWidth);
                 float v = float(j + distribution(generator)) / float(scrHeight);
-                if (ortho)
-                {
-                   r = cam.getOrthoRay(u, v);
-                }
-                else
-                {
-                   r = cam.getRay(u, v);
-                }
+                
+                r = cam.getRay(u, v, ortho);
+                
                 vec3 p = r.pointAtParameter(2.0);
                 col += color(r, world);
             }

@@ -31,13 +31,12 @@ public:
 	}
 	~Camera(){}
 	
-	Ray getRay(float u, float v)
+	Ray getRay(float u, float v, bool ortho)
 	{
-		return Ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
-	}
-	Ray getOrthoRay(float u, float v)
-	{
-		return Ray(vec3(u, v, 0), vec3(u, v, -600));
+		if (ortho)
+			return Ray(vec3(u, v, 0), vec3(u, v, -40000));
+		else
+			return Ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
 	}
 };
 
