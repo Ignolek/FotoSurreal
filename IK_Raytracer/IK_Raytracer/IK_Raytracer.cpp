@@ -35,17 +35,17 @@ int main()
     LightIntensity lColor(220, 0, 0);
     Sphere sphere(vec3(0, 0, -1), 0.5);
     Hitable* list[3];
-    list[0] = new Sphere(vec3(0.5, 0, -1), 0.25);
+    list[0] = new Sphere(vec3(0.5, 0.0, -1), 0.25);
     list[1] = new Sphere(vec3(0, -100.5, -1), 100);
     list[2] = new Sphere(vec3(-0.5, 0, -4), 0.25);
     Hitable* world = new HitableList(list, 3);
-    Camera cam(vec3(0, 0, 0), vec3(0.0, 0, -1), vec3(0, -1, 0), 90, float(scrWidth)/float(scrHeight));
+    Camera cam(vec3(0, 0, 0), vec3(0.0, 0, -1), vec3(0, -1, 0), 45, float(scrWidth)/float(scrHeight));
     bool ortho = false;
     std::cout << "Do You want to use orthogonal camera? [0 -- no, 1 -- yes]: ";
     std::cin >> ortho;
 
-    float pixelWidth = 2.0f / scrWidth;
-    float pixelHeight = 2.0f / scrHeight;
+    float pixelWidth = 2 / scrWidth;
+    float pixelHeight = 2 / scrHeight;
 
     for (int i = 0; i < scrWidth; i++)
     {
@@ -65,14 +65,16 @@ int main()
 
                 //LightIntensity color = GetColorByAntialiasing(world, uMin, uMax, vMin, vMax, i, j, 1.0f, vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
 
-                float pixelCenterX = -1.0f + (i + 0.5f) * u;
-                float pixelCenterY = 1.0f - (j + 0.5f) * v;
+                float pixelCenterX = u + pixelWidth;
+                float pixelCenterY = v + pixelHeight;
 
                 Ray r = cam.getRay(u, v, ortho);
-                col += color(r, world);
+                
+                //vec3 unit_direction = unit_vector()
+                col = color(r, world);
             }
            
-            col /= float(depth);
+            //col /= float(depth);
 
             int iR = int(255.99 * col[0]);
             int iG = int(255.99 * col[1]);
