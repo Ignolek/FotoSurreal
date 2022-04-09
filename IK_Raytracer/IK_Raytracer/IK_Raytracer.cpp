@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "LightIntensity.h"
 #include "HitableList.h"
+#include "ObjParser.h"
 
 vec3 color(const Ray& r, Hitable *world)
 {
@@ -32,6 +33,11 @@ int main()
 
     Image* orthogonal = new Image(scrWidth, scrHeight, 3);
     Image* perspective = new Image(scrWidth, scrHeight, 3);
+
+    ObjParser parser;
+    std::vector<vec3> vertices, indices;
+    parser.ParseFile("Cone.obj", vertices, indices);
+    std::cout << indices[0].x() << "  " << indices[0].y() << "  " << indices[0].z() << std::endl;
 
     LightIntensity lColor(220, 0, 0);
     Sphere sphere(vec3(0, 0, -1), 0.5);
@@ -69,7 +75,7 @@ int main()
                     float uMax = (-1.f + (i + 1.0f) * pixelWidth) * (90 * (float(scrWidth) / float(scrHeight)));
                     float vMax = (1.f - j * pixelHeight) * 90;
 
-                    //LightIntensity color = GetColorByAntialiasing(world, uMin, uMax, vMin, vMax, i, j, 1.0f, vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
+                    LightIntensity finalColor = finalColor.Antialiasing(world,&cam,fov, fov/45,ortho, uMin, uMax, vMin, vMax, i, j, 1.0f, std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
 
                     float pixelCenterX = u + pixelWidth;
                     float pixelCenterY = v + pixelHeight;
