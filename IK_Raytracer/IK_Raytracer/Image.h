@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Vector.h"
 #include "LightIntensity.h"
+#include "vec3.h"
 
 enum ImageType {
 	PNG, JPG, BMP, TGA
@@ -36,5 +37,4 @@ public:
 
 	void SetPixel(int x, int y, LightIntensity color);
 	//void DrawTriangle(Vector p1, Vector p2, Vector p3, LightIntensity color);
-
 };

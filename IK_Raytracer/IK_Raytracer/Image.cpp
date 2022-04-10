@@ -19,6 +19,7 @@ Image::Image(const char* filename) {
 Image::Image(int w, int h, int channels) : w(w), h(h), channels(channels) {
 	size = w * h * channels;
 	data = new uint8_t[size];
+
 }
 Image::Image(const Image& img) : Image(img.w, img.h, img.channels) {
 	memcpy(data, img.data, size);

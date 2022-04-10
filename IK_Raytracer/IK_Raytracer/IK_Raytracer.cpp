@@ -37,11 +37,12 @@ int main()
     LightIntensity lColor(220, 0, 0);
   
     Hitable* list[4];
-    list[0] = new Sphere(vec3(0.0, 0.0, -1), 0.25);
-    list[1] = new Sphere(vec3(0, -100.5, -1), 100);
-    list[2] = new Sphere(vec3(-0.25, 0, -0.5), 0.35);
+    list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2));
+    list[1] = new Sphere(vec3(0.0, 0.0, -1), 0.25);
+    list[2] = new Sphere(vec3(0, -100.5, -1), 100);
+    list[3] = new Sphere(vec3(-0.25, 0, -0.5), 0.35);
     
-    list[3] = new Triangle(vec3(-.2, 0.0, -2), vec3(.2, 0.0, 0.0), vec3(0, 0.2, 0));
+    
     Hitable* world = new HitableList(list, 4);
     float fov = 90;
     Camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
