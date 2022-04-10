@@ -142,6 +142,7 @@
     <ClCompile Include="IK_Raytracer.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="LightIntensity.cpp" />
+    <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Sphere.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="HitableList.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="LightIntensity.h" />
+    <ClInclude Include="ObjParser.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Sphere.h" />
