@@ -101,12 +101,12 @@ bool LightIntensity::operator==(const LightIntensity& li)
 
 LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> colors)
 {
-	LightIntensity result(0.0f);
-	Ray ray;
+	LightIntensity result = (0.0f, 0.0f, 0.0f);
+	Ray ray(vec3(0,0,0), vec3(0,0,1));
 
 	if (colors[LEFT_UPPER] == nullptr)
 	{
-		ray = camera->getRay(x + xMin,y + yMin, fov, m, ortho);
+		ray = camera->getRay(xMin, yMin, fov, m, ortho);
 		colors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray,world));
 	}
 	if (colors[RIGHT_UPPER] == nullptr)
