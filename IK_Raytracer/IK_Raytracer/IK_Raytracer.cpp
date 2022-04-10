@@ -37,7 +37,16 @@ int main()
     ObjParser parser;
     std::vector<vec3> vertices, indices;
     parser.ParseFile("Cone.obj", vertices, indices);
-    std::cout << indices[0].x() << "  " << indices[0].y() << "  " << indices[0].z() << std::endl;
+    //std::cout << finalColor.getRed() << "  " << finalColor.getGreen() << "  " << finalColor.getBlue() << std::endl;
+
+    LightIntensity testColor(100, 100, 100);
+    LightIntensity* testColor2 = new LightIntensity(120, 120, 120);
+    testColor += *testColor2;
+    //if (*testColor == *testColor2)
+    //{
+        std::cout << testColor.getRed() << "  " << testColor.getGreen() << "  " << testColor.getBlue() << std::endl;
+    //}
+    
 
     LightIntensity lColor(220, 0, 0);
     Sphere sphere(vec3(0, 0, -1), 0.5);
@@ -47,7 +56,8 @@ int main()
     list[2] = new Sphere(vec3(-0.25, 0, -4), 0.25);
     Hitable* world = new HitableList(list, 3);
     float fov = 45;
-    Camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    //Camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    Camera* cam = new Camera(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
     bool ortho = true;
 
     float pixelWidth = 2 / scrWidth;
@@ -69,41 +79,41 @@ int main()
                     float u = float(i) / float(scrWidth);
                     float v = float(j) / float(scrHeight);
 
-                    float uMin = (-1.f + i * pixelWidth) * (90 * (float(scrWidth) / float(scrHeight)));
-                    float vMin = (1.f - (j + 1.0f) * pixelHeight) * 90;
+                    float uMin = (-1.f + i * pixelWidth) * (fov * (float(scrWidth) / float(scrHeight)));
+                    float uMax = (-1.f + (i + 1.0f) * pixelWidth) * (fov * (float(scrWidth) / float(scrHeight)));
 
-                    float uMax = (-1.f + (i + 1.0f) * pixelWidth) * (90 * (float(scrWidth) / float(scrHeight)));
-                    float vMax = (1.f - j * pixelHeight) * 90;
+                    float vMin = (1.f - (j + 1.0f) * pixelHeight) * fov;
+                    float vMax = (1.f - j * pixelHeight) * fov;
 
-                    LightIntensity finalColor = finalColor.Antialiasing(world,&cam,fov, fov/45,ortho, uMin, uMax, vMin, vMax, i, j, 1.0f, std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
-
+                    LightIntensity finalColor = finalColor.Antialiasing(world,cam,fov, fov / 45,ortho, uMin, uMax, vMin, vMax, i, j, 1.0f, std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
+                    
                     float pixelCenterX = u + pixelWidth;
                     float pixelCenterY = v + pixelHeight;
 
                     if (ortho == true)
                     {
-                        r = cam.getRay(u, v, fov, fov / 45, ortho);
-                        col = color(r, world);
-        
-                        int iR = int(255.99 * col[0]);
-                        int iG = int(255.99 * col[1]);
-                        int iB = int(255.99 * col[2]);
+                        r = cam->getRay(u, v, fov, fov / 45, ortho);
+                        //col = color(r, world);
+                        LightIntensity newColor = newColor.GetColorFromRay(r, world);
+                        //int iR = int(255.99 * newColor.getRed());
+                        //int iG = int(255.99 * newColor.getGreen());
+                        //int iB = int(255.99 * newColor.getBlue());
 
-                        lColor(iR, iG, iB);
-                        orthogonal->SetPixel(i, j, lColor);
+                        //lColor(iR, iG, iB);
+                        orthogonal->SetPixel(i, j, newColor);
                     }
 
                     else
                     {
-                        r = cam.getRay(u, v, fov, fov / 45, ortho);
-                        col = color(r, world);
+                        r = cam->getRay(u, v, fov, fov / 45, ortho);
+                        //col = color(r, world);
+                        LightIntensity newColor = newColor.GetColorFromRay(r, world);
+                        //int iR = int(255.99 * newColor.getRed());
+                        //int iG = int(255.99 * newColor.getGreen());
+                        //int iB = int(255.99 * newColor.getBlue());
 
-                        int iR = int(255.99 * col[0]);
-                        int iG = int(255.99 * col[1]);
-                        int iB = int(255.99 * col[2]);
-
-                        lColor(iR, iG, iB);
-                        perspective->SetPixel(i, j, lColor);
+                        //lColor(iR, iG, iB);
+                        perspective->SetPixel(i, j, newColor);
                     }
                 }
             }
