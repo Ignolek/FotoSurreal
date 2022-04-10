@@ -3,6 +3,7 @@
 #include "vec3.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Triangle.h"
 #include "Ray.h"
 #include "Image.h"
 #include "Camera.h"
@@ -34,13 +35,15 @@ int main()
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     LightIntensity lColor(220, 0, 0);
-    Sphere sphere(vec3(0, 0, -1), 0.5);
-    Hitable* list[3];
+  
+    Hitable* list[4];
     list[0] = new Sphere(vec3(0.0, 0.0, -1), 0.25);
     list[1] = new Sphere(vec3(0, -100.5, -1), 100);
-    list[2] = new Sphere(vec3(-0.25, 0, -4), 0.25);
-    Hitable* world = new HitableList(list, 3);
-    float fov = 45;
+    list[2] = new Sphere(vec3(-0.25, 0, -0.5), 0.35);
+    
+    list[3] = new Triangle(vec3(-.2, 0.0, -2), vec3(.2, 0.0, 0.0), vec3(0, 0.2, 0));
+    Hitable* world = new HitableList(list, 4);
+    float fov = 90;
     Camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
     bool ortho = true;
 

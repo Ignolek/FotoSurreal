@@ -136,6 +136,14 @@ inline vec3& vec3::operator/=(const float t) {
     return *this;
 }
 
+inline vec3 normalize(const vec3& v1) {
+    float lenghtInverse = 1 / v1.length();
+    return vec3(
+        v1.e[0] * lenghtInverse,
+        v1.e[1] * lenghtInverse,
+        v1.e[2] * lenghtInverse);
+}
+
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
