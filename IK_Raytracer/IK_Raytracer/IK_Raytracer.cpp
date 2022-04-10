@@ -28,8 +28,8 @@ vec3 color(const Ray& r, Hitable *world)
 
 int main()
 {
-    int scrWidth = 200;
-    int scrHeight = 100;
+    int scrWidth = 2000;
+    int scrHeight = 1000;
     int depth = 1;
 
     Image* orthogonal = new Image(scrWidth, scrHeight, 3);
@@ -53,19 +53,19 @@ int main()
   
     Hitable* list[4];
     list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2));
-    list[1] = new Sphere(vec3(0.0, 0.0, -1), 0.25);
-    list[2] = new Sphere(vec3(0, -100.5, -1), 100);
-    list[3] = new Sphere(vec3(-0.25, 0, -0.5), 0.35);
+    list[1] = new Sphere(vec3(0.0, 0.0, -1), 0.25,vec3(255.0,161.0,0.0));
+    list[2] = new Sphere(vec3(0, -100.5, -1), 100, vec3(103.0, 200.0, 107.0));
+    list[3] = new Sphere(vec3(-0.25, 0, -0.5), 0.35, vec3(201.0, 118.0, 11.0));
     
     
     Hitable* world = new HitableList(list, 4);
-    float fov = 90;
-    Camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    float fov = 90.0f;
+    Camera* cam = new Camera(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     bool ortho = true;
 
-    float pixelWidth = 2.0f / scrWidth; // 0.01
-    float pixelHeight = 2.0f / scrHeight; // 0.0
+    float pixelWidth = 2.0f / float(scrWidth); // 0.01
+    float pixelHeight = 2.0f / float(scrHeight); // 0.0
 
     //std::cout << pixelWidth << ", " << pixelHeight << std::endl;
     for (int imageNumber = 0; imageNumber < 2; imageNumber++)
@@ -96,20 +96,20 @@ int main()
                     if (uMax > 1) uMax = 1;
                     if (vMax > 1) vMax = 1;
 
-                    /*float uMin = (-1.f + (i * pixelWidth)) * (fov * float(scrWidth) / float(scrHeight));
-                    float uMax = (-1.f + ((i + 1.0f) * pixelWidth)) * (fov * float(scrWidth) / float(scrHeight));
+                    //float uMin = (-1.f + (i * pixelWidth)) * (fov * float(scrWidth) / float(scrHeight));
+                    //float uMax = (-1.f + ((i + 1.0f) * pixelWidth)) * (fov * float(scrWidth) / float(scrHeight));
 
-                    float vMax = (1.0f - (j * pixelHeight)) * fov;
-                    float vMin = (1.0f - ((j + 1.0f) * pixelHeight)) * fov;*/
-
-
+                    //float vMax = (1.0f - (j * pixelHeight)) * fov;
+                    //float vMin = (1.0f - ((j + 1.0f) * pixelHeight)) * fov;
 
 
-                   /*std::cout << "[" << i << ", " << j << "]: " << "UV: [" << u << ", " << v << "]: "
-                              << "uMinMax: [" << uMin << ", " << uMax << "]" << "vMinMax: [" << vMin << ", " << vMax << "]" << std::endl;*/
 
-                    LightIntensity finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45, ortho, 
-                                                                        uMin, uMax, vMin, vMax, i, j, 2, 
+
+                   //std::cout << "[" << i << ", " << j << "]: " << "UV: [" << u << ", " << v << "]: "
+                   //           << "uMinMax: [" << uMin << ", " << uMax << "]" << "vMinMax: [" << vMin << ", " << vMax << "]" << std::endl;
+
+                    LightIntensity finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, ortho, 
+                                                                        uMin, uMax, vMin, vMax, i, j, 0.5f, 
                                                                         std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
                     
                     float pixelCenterX = u + pixelWidth;

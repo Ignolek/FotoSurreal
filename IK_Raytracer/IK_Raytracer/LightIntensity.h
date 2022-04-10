@@ -17,8 +17,8 @@ protected:
 	float maxSteps = 0.125f;
 public:
 	LightIntensity(double R, double G, double B) { r = R; g = G; b = B; }
-	LightIntensity(double R, double G) { r = R; g = G; b = 0.0; }
-	LightIntensity(double R) { r = R; g = b = 0.0; }
+	LightIntensity(double R, double G) { r = R; g = G; b = 0.0f; }
+	LightIntensity(double R) { r = R; g = b = 0.0f; }
 	LightIntensity() { r = g = b = 0.0; }
 
 	double getRed() { return r; }
@@ -26,8 +26,8 @@ public:
 	double getBlue() { return b; }
 
 	void operator()(float R, float G, float B) { r = R; g = G; b = B; }
-	void operator()(float R, float G) { r = R; g = G; b = 0.0; }
-	void operator()(float R) { r = R; g = b = 0.0; }
+	void operator()(float R, float G) { r = R; g = G; b = 0.0f; }
+	void operator()(float R) { r = R; g = b = 0.0f; }
 
 	void add(double R, double G, double B);
 

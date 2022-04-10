@@ -101,7 +101,8 @@ bool LightIntensity::operator==(const LightIntensity& li)
 
 LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> colors)
 {
-	LightIntensity result = (0.0f, 0.0f, 0.0f);
+	maxSteps = 0.125f;
+	LightIntensity result(0.0f, 0.0f, 0.0f);
 	Ray ray(vec3(0,0,0), vec3(0,0,1));
 
 	if (colors[LEFT_UPPER] == nullptr)
@@ -136,7 +137,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else 
 	{
-		result += Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[LEFT_UPPER]), nullptr, new LightIntensity(*colors[CENTER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[LEFT_UPPER]), nullptr, new LightIntensity(*colors[CENTER]), nullptr, nullptr});
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
@@ -146,7 +147,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else
 	{
-		result += Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax , yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[RIGHT_UPPER]), nullptr, new LightIntensity(*colors[CENTER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax , yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[RIGHT_UPPER]), nullptr, new LightIntensity(*colors[CENTER]), nullptr, nullptr});
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
@@ -156,7 +157,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else
 	{
-		result += Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[CENTER]), nullptr, new LightIntensity(*colors[RIGHT_LOWER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[CENTER]), nullptr, new LightIntensity(*colors[RIGHT_LOWER]), nullptr, nullptr});
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
@@ -166,7 +167,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else
 	{
-		result += Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[CENTER]), nullptr, new LightIntensity(*colors[LEFT_LOWER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*colors[CENTER]), nullptr, new LightIntensity(*colors[LEFT_LOWER]), nullptr, nullptr});
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
