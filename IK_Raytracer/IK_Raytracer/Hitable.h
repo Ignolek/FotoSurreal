@@ -8,6 +8,7 @@ struct hitRecord
 	float t;
 	vec3 p;
 	vec3 normal;
+	vec3 hitColor;
 };
 
 class Hitable 

@@ -49,11 +49,11 @@ int main()
     
 
     LightIntensity lColor(220, 0, 0);
-    Sphere sphere(vec3(0, 0, -1), 0.5);
+
     Hitable* list[3];
-    list[0] = new Sphere(vec3(0.0, 0.0, -1), 0.25);
-    list[1] = new Sphere(vec3(0, -100.5, -1), 100);
-    list[2] = new Sphere(vec3(-0.25, 0, -4), 0.25);
+    list[0] = new Sphere(vec3(0.0, 0.0, -1), 0.25, vec3(255, 0, 0));
+    list[1] = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 255, 0));
+    list[2] = new Sphere(vec3(-0.25, 0, -4), 0.25, vec3(0, 0, 255));
     Hitable* world = new HitableList(list, 3);
     float fov = 45;
     //Camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
@@ -85,7 +85,7 @@ int main()
                     float vMin = (1.f - (j + 1.0f) * pixelHeight) * fov;
                     float vMax = (1.f - j * pixelHeight) * fov;
 
-                    LightIntensity finalColor = finalColor.Antialiasing(world,cam,fov, fov / 45,ortho, uMin, uMax, vMin, vMax, i, j, 1.0f, std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
+                    LightIntensity finalColor = finalColor.Antialiasing(world,cam, fov, fov / 45,ortho, uMin, uMax, vMin, vMax, i, j, 1.0f, std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
                     
                     float pixelCenterX = u + pixelWidth;
                     float pixelCenterY = v + pixelHeight;
@@ -100,7 +100,7 @@ int main()
                         //int iB = int(255.99 * newColor.getBlue());
 
                         //lColor(iR, iG, iB);
-                        orthogonal->SetPixel(i, j, newColor);
+                        orthogonal->SetPixel(i, j, finalColor);
                     }
 
                     else
@@ -113,7 +113,7 @@ int main()
                         //int iB = int(255.99 * newColor.getBlue());
 
                         //lColor(iR, iG, iB);
-                        perspective->SetPixel(i, j, newColor);
+                        perspective->SetPixel(i, j, finalColor);
                     }
                 }
             }

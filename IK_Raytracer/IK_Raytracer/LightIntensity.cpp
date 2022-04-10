@@ -106,7 +106,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 
 	if (colors[LEFT_UPPER] == nullptr)
 	{
-		ray = camera->getRay(xMin, yMin, fov, m, ortho);
+		ray = camera->getRay(x + xMin,y + yMin, fov, m, ortho);
 		colors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray,world));
 	}
 	if (colors[RIGHT_UPPER] == nullptr)
@@ -202,7 +202,8 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world)
 	hitRecord rec;
 	if (world->hit(r, 0.0, FLT_MAX, rec) == true)
 	{
-		return LightIntensity(255.99 * (rec.normal.x() + 1) * 0.5f, 255.99 * (rec.normal.y() + 1) * 0.5f, 255.99 * (rec.normal.z() + 1) * 0.5f);
+		return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
+		//return LightIntensity(255.99 * (rec.normal.x() + 1) * 0.5f, 255.99 * (rec.normal.y() + 1) * 0.5f, 255.99 * (rec.normal.z() + 1) * 0.5f);
 	}
 	else
 	{
