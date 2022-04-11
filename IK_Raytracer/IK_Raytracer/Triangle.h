@@ -3,16 +3,19 @@
 #include "Ray.h"
 #include "Hitable.h"
 
+#define PLUS_ZERO 0.00001 
+
 class Triangle : public Hitable
 {
 public:
 	vec3 tA, tB, tC;
 	bool _hit = false;
+	vec3 color;
 
 	double distance = 0;
 
 	Triangle() : tA(1, 0, 0), tB(0, 1, 0), tC(0, 0, 1){}
-	Triangle(const vec3 _a, const vec3 _b, const vec3 _c) : tA(_a), tB(_b), tC(_c){}
+	Triangle(const vec3 _a, const vec3 _b, const vec3 _c, vec3 col) : tA(_a), tB(_b), tC(_c), color(col){}
 	~Triangle();
 
 	vec3 getTriangleNormal() const
@@ -111,12 +114,14 @@ public:
 
 			double test3 = dot(cross(AB, QB), normal);
 
-			if (test1 >= 0 && test2 >= 0 && test3 >= 0)//(test1 >= tMin && test2 >= tMin && test3 >= tMin && test1 <= tMax && test2 <= tMax && test3 <= tMax)
+			//if (test1 >= tMin && test2 >= tMin && test3 >= tMin && test1 <= tMax && test2 <= tMax && test3 <= tMax)//(test1 >= PLUS_ZERO && test2 >= PLUS_ZERO && test3 >= PLUS_ZERO)//(test1 >= tMin && test2 >= tMin && test3 >= tMin && test1 <= tMax && test2 <= tMax && test3 <= tMax)
+			if (test1 >= 0 && test2 >= 0 && test3 >= 0)
 			{
 				// inside triangle
 				rec.t = -1 * b / a;
 				rec.p = ray.pointAtParameter(rec.t);
 				rec.normal = normal;
+				rec.hitColor = color;
 
 				return true;
 			}

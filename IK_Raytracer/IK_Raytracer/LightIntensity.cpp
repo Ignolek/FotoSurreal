@@ -201,7 +201,7 @@ LightIntensity operator*(float num, LightIntensity& li)
 LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world)
 {
 	hitRecord rec;
-	if (world->hit(r, 0.0, FLT_MAX, rec) == true)
+	if (world->hit(r, 0.0, 10000, rec) == true)
 	{
 		return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
 		//return LightIntensity(255.99 * (rec.normal.x() + 1) * 0.5f, 255.99 * (rec.normal.y() + 1) * 0.5f, 255.99 * (rec.normal.z() + 1) * 0.5f);

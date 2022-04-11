@@ -28,36 +28,43 @@ vec3 color(const Ray& r, Hitable *world)
 
 int main()
 {
-    int scrWidth = 400;
-    int scrHeight = 200;
+    int scrWidth = 200;
+    int scrHeight = 100;
 
+    bool isAntyalia = true;
     Image* orthogonal = new Image(scrWidth, scrHeight, 3);
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     ObjParser parser;
     std::vector<vec3> vertices, indices;
-    parser.ParseFile("Cone.obj", vertices, indices);
-    float scale = 1 / 10.0f;
+    parser.ParseFile("cubeTri.obj", vertices, indices);
+    float scale = 1 / 1.0f;
     
     LightIntensity lColor(220, 0, 0);
   
     // vector of hitable objects
     std::vector<Hitable*> hitables;
-    Hitable* tri = new Triangle();
     
     Hitable* list[4];
-    list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2));
+    //list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2));
     list[1] = new Sphere(vec3(0.0, 0.0, -1), 0.25,vec3(255.0,161.0,0.0));
     list[2] = new Sphere(vec3(0, -100.5, -1), 100, vec3(103.0, 200.0, 107.0));
     list[3] = new Sphere(vec3(-0.25, 0, -0.5), 0.35, vec3(201.0, 118.0, 11.0));
 
     // for loop which iterates through all vertices in parser
-    for (int i = 0; i < vertices.size(); i += 3)
+    for (int i = 0; i < indices.size(); i++)
     {
-        // Triangle made from vertices 
-        Hitable* meshTriangle = new Triangle(vertices.at(i) * scale, vertices.at(i + 1) * scale, vertices.at(i + 2) * scale);
+        // Triangle made from indices 
+        Hitable* meshTriangle = new Triangle(vertices.at(indices.at(i).x()) * scale, 
+                                             vertices.at(indices.at(i).y()) * scale, 
+                                             vertices.at(indices.at(i).z()) * scale, 
+                                             vec3(rand(), rand(), rand()));
+      
 
-        std::cout << "Tris nr [" << i / 3 << "]: " << vertices.at(i) * scale << ", " << vertices.at(i + 1) * scale << ", " << vertices.at(i + 2) * scale << std::endl;
+       /* std::cout << indices.at(i).x() << "/" << indices.at(i).y() << "/" << indices.at(i).z() 
+                  << ":[" << vertices.at(indices.at(i).x()) << " / " 
+                  << vertices.at(indices.at(i).y()) << " / "
+                  << vertices.at(indices.at(i).z()) << "] " << std::endl;*/
         
         // Add triangle to hitables
         hitables.push_back(meshTriangle);
@@ -68,7 +75,7 @@ int main()
     // pass hitables to world
     Hitable* world = new HitableList(hitables);
     float fov = 90.0f;
-    Camera* cam = new Camera(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     bool ortho = true;
 
@@ -85,8 +92,8 @@ int main()
         {
             for (int j = 0; j < scrHeight; j++)
             {
-                vec3 col(0, 0, 0);
                 Ray r;
+                LightIntensity finalColor;
 
                 float u = float(i) / float(scrWidth);
                 float v = float(j) / float(scrHeight);
@@ -102,9 +109,10 @@ int main()
                 if (uMax > 1) uMax = 1;
                 if (vMax > 1) vMax = 1;*/
 
-                /*LightIntensity finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, ortho, 
+                if (isAntyalia)
+                finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, ortho, 
                                                                     uMin, uMax, vMin, vMax, i, j, 0.5f, 
-                                                                    std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});*/
+                                                                    std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
                  
                 
                 float pixelCenterX = u + pixelWidth;
@@ -112,18 +120,28 @@ int main()
 
                 if (ortho == true)
                 {
-                    r = cam->getRay(u, v, fov, fov / 45, ortho);
-                    LightIntensity newColor = newColor.GetColorFromRay(r, world);
+                    if (isAntyalia == false)
+                    {
+                        r = cam->getRay(u, v, fov, fov / 45, ortho);
+                        LightIntensity newColor = newColor.GetColorFromRay(r, world);
 
-                    orthogonal->SetPixel(i, j, newColor);
+                        orthogonal->SetPixel(i, j, newColor);
+                    }
+                    else
+                        orthogonal->SetPixel(i, j, finalColor);
                 }
 
                 else
                 {
-                    r = cam->getRay(u, v, fov, fov / 45, ortho);
-                    LightIntensity newColor = newColor.GetColorFromRay(r, world);
+                    if (isAntyalia == false)
+                    {
+                        r = cam->getRay(u, v, fov, fov / 45, ortho);
+                        LightIntensity newColor = finalColor.GetColorFromRay(r, world);
 
-                    perspective->SetPixel(i, j, newColor);
+                        perspective->SetPixel(i, j, newColor);
+                    }
+
+                    perspective->SetPixel(i, j, finalColor);
                 }
             }
         }
