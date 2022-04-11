@@ -36,7 +36,8 @@ int main()
 
     ObjParser parser;
     std::vector<vec3> vertices, indices;
-    parser.ParseFile("ConeTrans.obj", vertices, indices);
+    parser.ParseFile("Cone.obj", vertices, indices);
+    float scale = 1 / 10.0f;
     
     LightIntensity lColor(220, 0, 0);
   
@@ -54,9 +55,9 @@ int main()
     for (int i = 0; i < vertices.size(); i += 3)
     {
         // Triangle made from vertices 
-        Hitable* meshTriangle = new Triangle(vertices.at(i), vertices.at(i + 1), vertices.at(i + 2));
+        Hitable* meshTriangle = new Triangle(vertices.at(i) * scale, vertices.at(i + 1) * scale, vertices.at(i + 2) * scale);
 
-        std::cout << "Tris nr [" << i / 3 << "]: " << vertices.at(i) << ", " << vertices.at(i + 1) << ", " << vertices.at(i + 2) << std::endl;
+        std::cout << "Tris nr [" << i / 3 << "]: " << vertices.at(i) * scale << ", " << vertices.at(i + 1) * scale << ", " << vertices.at(i + 2) * scale << std::endl;
         
         // Add triangle to hitables
         hitables.push_back(meshTriangle);
@@ -96,10 +97,10 @@ int main()
                 float vMin = v - (pixelHeight / 2); 
                 float vMax = v + (pixelHeight / 2);
 
-                if (uMin < 0) uMin = 0;
+                /*if (uMin < 0) uMin = 0;
                 if (vMin < 0) vMin = 0;
                 if (uMax > 1) uMax = 1;
-                if (vMax > 1) vMax = 1;
+                if (vMax > 1) vMax = 1;*/
 
                 /*LightIntensity finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, ortho, 
                                                                     uMin, uMax, vMin, vMax, i, j, 0.5f, 

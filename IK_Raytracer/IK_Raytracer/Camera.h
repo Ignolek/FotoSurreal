@@ -35,17 +35,17 @@ public:
 	Ray getRay(float u, float v, float fov, float m, bool ortho)
 	{
 		fov /= 100;
-		if (u < 0 || v < 0 || u > 1 || v > 1)
-			return Ray(vec3(0, 0, 0), vec3(0, 0, 1));
-		else
-		{
+		/*if (u < 0 || v < 0 || u > 1 || v > 1)
+			return Ray(vec3(0, 0, 0), vec3(0, 0, 1));*/
+		/*else
+		{*/
 
 			float multiplier = pow(2.42, m - 1);
 			if (ortho)
 				return Ray(vec3(horizontal.e[0] * u + 0.825 * multiplier, vertical.e[1] * v + fov, 0), vec3(horizontal.e[0] * u + 0.825 * multiplier, vertical.e[1] * v + fov, -1000));
 			else
 				return Ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
-		}
+		//}
 	}
 };
 
