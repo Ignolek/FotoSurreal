@@ -3,7 +3,7 @@
 #include "Ray.h"
 #include "Hitable.h"
 
-#define PLUS_ZERO 0.00001 
+#define MINUS_ZERO -0.00001 
 
 class Triangle : public Hitable
 {
@@ -66,7 +66,7 @@ public:
 
 		double a = dot(rayDirection, normal);
 
-		if (a <= PLUS_ZERO)
+		if (a <= MINUS_ZERO)
 		{
 			return false;
 		}

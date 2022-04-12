@@ -40,8 +40,8 @@ int main()
 
     ObjParser parser;
     std::vector<vec3> vertices, indices;
-    parser.ParseFile("coneBlend.obj", vertices, indices);
-    float scale = 1 / 1.0f;
+    parser.ParseFile("cubeTri.obj", vertices, indices);
+    float scale = 1 / 2.0f;
   
     // vector of hitable objects
     std::vector<Hitable*> hitables;
@@ -49,17 +49,17 @@ int main()
     Hitable* list[4];
     list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2), vec3(0, 0, 0));
     list[1] = new Sphere(vec3(0.0, 0.0, -1), 0.25,vec3(255.0,161.0,0.0));
-    list[2] = new Sphere(vec3(0, -100.5, -1), 100, vec3(103.0, 200.0, 107.0));
+    list[2] = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 154, 23));
     list[3] = new Sphere(vec3(-0.25, 0, -0.5), 0.35, vec3(201.0, 118.0, 11.0));
 
     // for loop which iterates through all vertices in parser
     for (int i = 0; i < indices.size(); i++)
     {
         // Triangle made from indices 
-        Hitable* meshTriangle = new Triangle(vertices.at(indices.at(i).x()) * scale - vec3(0, 2, 0), 
-                                             vertices.at(indices.at(i).y()) * scale - vec3(0, 2, 0),
-                                             vertices.at(indices.at(i).z()) * scale - vec3(0, 2, 0),
-                                             vec3(rand(), rand(), rand()));
+        Hitable* meshTriangle = new Triangle(vertices.at(indices.at(i).x()) * scale - vec3(0, 0, 0), 
+                                             vertices.at(indices.at(i).y()) * scale - vec3(0, 0, 0),
+                                             vertices.at(indices.at(i).z()) * scale - vec3(0, 0, 0),
+                                             vec3(200, 50, 50));
       
 
        /* std::cout << indices.at(i).x() << "/" << indices.at(i).y() << "/" << indices.at(i).z() 
@@ -73,6 +73,7 @@ int main()
 
     /*for (int i = 0; i < 4; i++)
         hitables.push_back(list[i]);*/
+    hitables.push_back(list[2]);
     std::cout << hitables.size() << std::endl;
     
     // pass hitables to world
@@ -114,7 +115,7 @@ int main()
 
                 if (isAntyalia)
                 finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, ortho, 
-                                                                    uMin, uMax, vMin, vMax, i, j, 0.125f, 
+                                                                    uMin, uMax, vMin, vMax, i, j, 0.50f, 
                                                                     std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
                  
                 
@@ -148,6 +149,8 @@ int main()
                         perspective->SetPixel(i, j, finalColor);
                 }
             }
+
+            std::cout << "Please wait, " << (i * 100) / scrWidth << "% of image has been calculated." << std::endl;
         }
         orthogonal->Write("ortho.png");
         if(ortho == true)
