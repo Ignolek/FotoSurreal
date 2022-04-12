@@ -66,18 +66,18 @@ public:
 
 		double a = dot(rayDirection, normal);
 
-		if (a == 0)
+		if (a <= PLUS_ZERO)
 		{
-			return -1;
+			return false;
 		}
 		else
 		{
-			double b = dot(normal, ray.origin() + (normal * -distance)); // moze to?
-			double distanceToPlane = -1 * b / a;
+			double b = dot(normal, ray.origin() + (normal * -distance));
+			double distanceToPlane = -1.0f * b / a;
 
-			double Qx = rayDirection.e[0] * distanceToPlane + ray.origin().e[0]; // moze to?
-			double Qy = rayDirection.e[1] * distanceToPlane + ray.origin().e[1]; // moze to?
-			double Qz = rayDirection.e[2] * distanceToPlane + ray.origin().e[2]; // moze to?
+			double Qx = rayDirection.e[0] * distanceToPlane + ray.origin().e[0];
+			double Qy = rayDirection.e[1] * distanceToPlane + ray.origin().e[1];
+			double Qz = rayDirection.e[2] * distanceToPlane + ray.origin().e[2];
 
 			vec3 Q(Qx, Qy, Qz);
 
@@ -114,12 +114,12 @@ public:
 
 			double test3 = dot(cross(AB, QB), normal);
 
-			//if (test1 >= tMin && test2 >= tMin && test3 >= tMin && test1 <= tMax && test2 <= tMax && test3 <= tMax)//(test1 >= PLUS_ZERO && test2 >= PLUS_ZERO && test3 >= PLUS_ZERO)//(test1 >= tMin && test2 >= tMin && test3 >= tMin && test1 <= tMax && test2 <= tMax && test3 <= tMax)
-			if (test1 >= 0 && test2 >= 0 && test3 >= 0)
+			if (test1 >= tMin && test2 >= tMin && test3 >= tMin && test1 <= tMax && test2 <= tMax && test3 <= tMax)//(test1 >= PLUS_ZERO && test2 >= PLUS_ZERO && test3 >= PLUS_ZERO)//(test1 >= tMin && test2 >= tMin && test3 >= tMin && test1 <= tMax && test2 <= tMax && test3 <= tMax)
+			//if (test1 >= PLUS_ZERO && test2 >= PLUS_ZERO && test3 >= PLUS_ZERO)
 			{
 				// inside triangle
 				rec.t = -1 * b / a;
-				rec.p = ray.pointAtParameter(rec.t);
+				rec.p = Q;
 				rec.normal = normal;
 				rec.hitColor = color;
 

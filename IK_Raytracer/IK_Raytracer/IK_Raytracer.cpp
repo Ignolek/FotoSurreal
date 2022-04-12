@@ -11,42 +11,43 @@
 #include "HitableList.h"
 #include "ObjParser.h"
 
-vec3 color(const Ray& r, Hitable *world)
-{
-    hitRecord rec;
-    if (world->hit(r, 0.0, FLT_MAX, rec) == true)
-    {
-        return 0.5 * vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
-    }
-    else 
-    {
-        vec3 unitDirection = unit_vector(r.direction());
-        float t = 0.5 * (unitDirection.y() + 1.0);
-        return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
-    }
-}
+//vec3 color(const Ray& r, Hitable *world)
+//{
+//    hitRecord rec;
+//    if (world->hit(r, 0.0, FLT_MAX, rec) == true)
+//    {
+//        return 0.5 * vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
+//    }
+//    else 
+//    {
+//        vec3 unitDirection = unit_vector(r.direction());
+//        float t = 0.5 * (unitDirection.y() + 1.0);
+//        return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+//    }
+//}
 
 int main()
 {
-    int scrWidth = 200;
-    int scrHeight = 100;
+    int scrWidth = 1000;
+    int scrHeight = 500;
 
     bool isAntyalia = true;
+
+    std::cout << "Do you want to turn on antyaliasing [0 -- no, 1 -- yes]?: ";
+    std::cin >> isAntyalia;
     Image* orthogonal = new Image(scrWidth, scrHeight, 3);
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     ObjParser parser;
     std::vector<vec3> vertices, indices;
-    parser.ParseFile("cubeTri.obj", vertices, indices);
+    parser.ParseFile("coneBlend.obj", vertices, indices);
     float scale = 1 / 1.0f;
-    
-    LightIntensity lColor(220, 0, 0);
   
     // vector of hitable objects
     std::vector<Hitable*> hitables;
     
     Hitable* list[4];
-    //list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2));
+    list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2), vec3(0, 0, 0));
     list[1] = new Sphere(vec3(0.0, 0.0, -1), 0.25,vec3(255.0,161.0,0.0));
     list[2] = new Sphere(vec3(0, -100.5, -1), 100, vec3(103.0, 200.0, 107.0));
     list[3] = new Sphere(vec3(-0.25, 0, -0.5), 0.35, vec3(201.0, 118.0, 11.0));
@@ -55,9 +56,9 @@ int main()
     for (int i = 0; i < indices.size(); i++)
     {
         // Triangle made from indices 
-        Hitable* meshTriangle = new Triangle(vertices.at(indices.at(i).x()) * scale, 
-                                             vertices.at(indices.at(i).y()) * scale, 
-                                             vertices.at(indices.at(i).z()) * scale, 
+        Hitable* meshTriangle = new Triangle(vertices.at(indices.at(i).x()) * scale - vec3(0, 2, 0), 
+                                             vertices.at(indices.at(i).y()) * scale - vec3(0, 2, 0),
+                                             vertices.at(indices.at(i).z()) * scale - vec3(0, 2, 0),
                                              vec3(rand(), rand(), rand()));
       
 
@@ -70,11 +71,13 @@ int main()
         hitables.push_back(meshTriangle);
     }
 
+    /*for (int i = 0; i < 4; i++)
+        hitables.push_back(list[i]);*/
     std::cout << hitables.size() << std::endl;
     
     // pass hitables to world
     Hitable* world = new HitableList(hitables);
-    float fov = 90.0f;
+    float fov = 45.0f;
     Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     bool ortho = true;
@@ -111,7 +114,7 @@ int main()
 
                 if (isAntyalia)
                 finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, ortho, 
-                                                                    uMin, uMax, vMin, vMax, i, j, 0.5f, 
+                                                                    uMin, uMax, vMin, vMax, i, j, 0.125f, 
                                                                     std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
                  
                 
@@ -141,7 +144,8 @@ int main()
                         perspective->SetPixel(i, j, newColor);
                     }
 
-                    perspective->SetPixel(i, j, finalColor);
+                    else
+                        perspective->SetPixel(i, j, finalColor);
                 }
             }
         }

@@ -37,7 +37,6 @@ public:
 	LightIntensity operator*(float num);
 	LightIntensity operator/(float num);
 
-	//LightIntensity operator+=(LightIntensity& li);
 	void operator+=(LightIntensity li);
 	void operator-=(LightIntensity& li);
 	void operator*=(float num);
@@ -47,12 +46,9 @@ public:
 
 
 	friend LightIntensity operator*(float num, LightIntensity& li);
-	//friend LightIntensity operator*(LightIntensity& li, float num);
 
 	LightIntensity Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> colors);
 
 	LightIntensity GetColorFromRay(const Ray& r, Hitable* world);
-
-	//friend std::ostream& operator<<(std::ostream& str, LightIntensity& li);
 };
 
