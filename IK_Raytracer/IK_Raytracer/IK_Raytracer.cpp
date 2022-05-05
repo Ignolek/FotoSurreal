@@ -10,154 +10,103 @@
 #include "LightIntensity.h"
 #include "HitableList.h"
 #include "ObjParser.h"
-
-//vec3 color(const Ray& r, Hitable *world)
-//{
-//    hitRecord rec;
-//    if (world->hit(r, 0.0, FLT_MAX, rec) == true)
-//    {
-//        return 0.5 * vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
-//    }
-//    else 
-//    {
-//        vec3 unitDirection = unit_vector(r.direction());
-//        float t = 0.5 * (unitDirection.y() + 1.0);
-//        return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
-//    }
-//}
+#include "Mesh.h"
 
 int main()
 {
+    // Screen resolution
     int scrWidth = 1000;
     int scrHeight = 500;
 
+    // Image
+    Image* perspective = new Image(scrWidth, scrHeight, 3);
+
+    // Camera and rays settings
+    float fov = 45.0f;
+    Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+
+    float pixelWidth = 2.0f / float(scrWidth);
+    float pixelHeight = 2.0f / float(scrHeight);
+
+    // Antyaliasing switch
     bool isAntyalia = true;
 
     std::cout << "Do you want to turn on antyaliasing [0 -- no, 1 -- yes]?: ";
     std::cin >> isAntyalia;
-    Image* orthogonal = new Image(scrWidth, scrHeight, 3);
-    Image* perspective = new Image(scrWidth, scrHeight, 3);
 
+    // Vector of hitable objects
+    std::vector<Hitable*> hitables;
+
+    // Parser object which is used to assign vertices and indices of object to those vertices and indices given below
     ObjParser parser;
     std::vector<vec3> vertices, indices;
+
+    // Assigning vertices and indices;
     parser.ParseFile("cubeTri.obj", vertices, indices);
-    float scale = 1 / 2.0f;
-  
-    // vector of hitable objects
-    std::vector<Hitable*> hitables;
-    
-    Hitable* list[4];
-    list[0] = new Triangle(vec3(-1.2, 0.0, -0.2), vec3(0.2, 0.0, -0.2), vec3(0.0, 0.5, -0.2), vec3(0, 0, 0));
-    list[1] = new Sphere(vec3(0.0, 0.0, -1), 0.25,vec3(255.0,161.0,0.0));
-    list[2] = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 154, 23));
-    list[3] = new Sphere(vec3(-0.25, 0, -0.5), 0.35, vec3(201.0, 118.0, 11.0));
 
-    // for loop which iterates through all vertices in parser
-    for (int i = 0; i < indices.size(); i++)
-    {
-        // Triangle made from indices 
-        Hitable* meshTriangle = new Triangle(vertices.at(indices.at(i).x()) * scale - vec3(0, 0, 0), 
-                                             vertices.at(indices.at(i).y()) * scale - vec3(0, 0, 0),
-                                             vertices.at(indices.at(i).z()) * scale - vec3(0, 0, 0),
-                                             vec3(200, 50, 50));
-      
+    // Mesh made from parsed obj file
+    Mesh* cube = new Mesh(vertices, indices, 0.5f, vec3(3, 0, 0)); // 1. vertices of object 2. indices of object 3. scale 4. position
+    cube->addToWorld(&hitables);
+    vertices.clear();
+    indices.clear();
 
-       /* std::cout << indices.at(i).x() << "/" << indices.at(i).y() << "/" << indices.at(i).z() 
-                  << ":[" << vertices.at(indices.at(i).x()) << " / " 
-                  << vertices.at(indices.at(i).y()) << " / "
-                  << vertices.at(indices.at(i).z()) << "] " << std::endl;*/
-        
-        // Add triangle to hitables
-        hitables.push_back(meshTriangle);
-    }
+    // Second object creation:
+    parser.ParseFile("coneBlend2.obj", vertices, indices);
 
-    /*for (int i = 0; i < 4; i++)
-        hitables.push_back(list[i]);*/
-    hitables.push_back(list[2]);
+    Mesh* cone = new Mesh(vertices, indices, 0.5f, vec3(-3, 0, 0));
+    cone->addToWorld(&hitables);
+    vertices.clear();
+    indices.clear();
+ 
+    // green sphere which simulates ground
+    Hitable* ground = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 154, 23));
+    hitables.push_back(ground);
     std::cout << hitables.size() << std::endl;
     
     // pass hitables to world
     Hitable* world = new HitableList(hitables);
-    float fov = 45.0f;
-    Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
-    bool ortho = true;
-
-    float pixelWidth = 2.0f / float(scrWidth);
-    float pixelHeight = 2.0f / float(scrHeight); 
-
-    for (int imageNumber = 0; imageNumber < 2; imageNumber++)
+    for (int i = 0; i < scrWidth; i++)
     {
-        if (ortho == true)
-            std::cout << "Orthogonal image is rendering now..." << std::endl;
-        else
-            std::cout << "Perspective image is rendering now..." << std::endl;
-        for (int i = 0; i < scrWidth; i++)
+        for (int j = 0; j < scrHeight; j++)
         {
-            for (int j = 0; j < scrHeight; j++)
+            Ray r;
+            LightIntensity finalColor;
+
+            float u = float(i) / float(scrWidth);
+            float v = float(j) / float(scrHeight);
+
+            float uMin = u - (pixelWidth / 2);
+            float uMax = u + (pixelWidth / 2);
+
+            float vMin = v - (pixelHeight / 2);
+            float vMax = v + (pixelHeight / 2);
+
+            if (isAntyalia)
+                finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, false,
+                    uMin, uMax, vMin, vMax, i, j, 0.50f,
+                    std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
+
+
+            float pixelCenterX = u + pixelWidth;
+            float pixelCenterY = v + pixelHeight;
+
+
+            if (isAntyalia == false)
             {
-                Ray r;
-                LightIntensity finalColor;
+                r = cam->getRay(u, v, fov, fov / 45, false);
+                LightIntensity newColor = finalColor.GetColorFromRay(r, world);
 
-                float u = float(i) / float(scrWidth);
-                float v = float(j) / float(scrHeight);
-
-                float uMin = u - (pixelWidth / 2);
-                float uMax = u + (pixelWidth / 2);
-
-                float vMin = v - (pixelHeight / 2); 
-                float vMax = v + (pixelHeight / 2);
-
-                /*if (uMin < 0) uMin = 0;
-                if (vMin < 0) vMin = 0;
-                if (uMax > 1) uMax = 1;
-                if (vMax > 1) vMax = 1;*/
-
-                if (isAntyalia)
-                finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, ortho, 
-                                                                    uMin, uMax, vMin, vMax, i, j, 0.50f, 
-                                                                    std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
-                 
-                
-                float pixelCenterX = u + pixelWidth;
-                float pixelCenterY = v + pixelHeight;
-
-                if (ortho == true)
-                {
-                    if (isAntyalia == false)
-                    {
-                        r = cam->getRay(u, v, fov, fov / 45, ortho);
-                        LightIntensity newColor = newColor.GetColorFromRay(r, world);
-
-                        orthogonal->SetPixel(i, j, newColor);
-                    }
-                    else
-                        orthogonal->SetPixel(i, j, finalColor);
-                }
-
-                else
-                {
-                    if (isAntyalia == false)
-                    {
-                        r = cam->getRay(u, v, fov, fov / 45, ortho);
-                        LightIntensity newColor = finalColor.GetColorFromRay(r, world);
-
-                        perspective->SetPixel(i, j, newColor);
-                    }
-
-                    else
-                        perspective->SetPixel(i, j, finalColor);
-                }
+                perspective->SetPixel(i, j, newColor);
             }
 
-            std::cout << "Please wait, " << (i * 100) / scrWidth << "% of image has been calculated." << std::endl;
+            else
+                perspective->SetPixel(i, j, finalColor);
         }
-        orthogonal->Write("ortho.png");
-        if(ortho == true)
-            std::cout << "Orthogonal image created!" << std::endl;
 
-        ortho = false;
+        std::cout << "Please wait, " << (i * 100) / scrWidth << "% of image has been calculated." << std::endl;
     }
+    
 
     perspective->Write("perspective.png");
     std::cout << "Pespective image created!" << std::endl;
