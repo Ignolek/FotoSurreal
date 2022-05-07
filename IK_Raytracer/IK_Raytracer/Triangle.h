@@ -2,6 +2,7 @@
 #include "vec3.h"
 #include "Ray.h"
 #include "Hitable.h"
+#include "Material.h"
 
 #define MINUS_ZERO -0.00001 
 
@@ -13,9 +14,10 @@ public:
 	vec3 color;
 
 	double distance = 0;
+	Material* triangleMaterial;
 
 	Triangle() : tA(1, 0, 0), tB(0, 1, 0), tC(0, 0, 1){}
-	Triangle(const vec3 _a, const vec3 _b, const vec3 _c, vec3 col) : tA(_a), tB(_b), tC(_c), color(col){}
+	Triangle(const vec3 _a, const vec3 _b, const vec3 _c, vec3 col, Material* triMaterial) : tA(_a), tB(_b), tC(_c), color(col), triangleMaterial(triMaterial){}
 	~Triangle();
 
 	vec3 getTriangleNormal() const
@@ -122,6 +124,7 @@ public:
 				rec.p = Q;
 				rec.normal = normal;
 				rec.hitColor = color;
+				rec.materialPtr = triangleMaterial;
 
 				return true;
 			}

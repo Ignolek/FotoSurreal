@@ -11,6 +11,9 @@
 #include "HitableList.h"
 #include "ObjParser.h"
 #include "Mesh.h"
+#include "Material.h"
+#include "Metal.h"
+#include "Lambertian.h"
 #include "PointLight.h"
 
 int main()
@@ -53,21 +56,21 @@ int main()
     point->quadAttenuation = 0.0001;
 
     // Mesh made from parsed obj file
-    Mesh* cube = new Mesh(vertices, indices, 0.5f, vec3(3, 0, 0)); // 1. vertices of object 2. indices of object 3. scale 4. position
+    Mesh* cube = new Mesh(vertices, indices, 0.5f, vec3(3, 0, 0), new Metal(vec3(0.8, 0.6, 0.2))); // 1. vertices of object 2. indices of object 3. scale 4. position
     cube->addToWorld(&hitables);
     vertices.clear();
     indices.clear();
 
     // Second object creation:
-    parser.ParseFile("cube.obj", vertices, indices);
+    parser.ParseFile("cone.obj", vertices, indices);
 
-    Mesh* cone = new Mesh(vertices, indices, 0.5f, vec3(-3, 0, 0));
+    Mesh* cone = new Mesh(vertices, indices, 0.5f, vec3(-3, 0, 0), new Metal(vec3(0.8, 0.8, 0.8)));
     cone->addToWorld(&hitables);
     vertices.clear();
     indices.clear();
  
     // green sphere which simulates ground
-    Hitable* ground = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 154, 23));
+    Hitable* ground = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 154, 23), new Metal(vec3(0.8, 0.8, 0.8)));
     hitables.push_back(ground);
     std::cout << hitables.size() << std::endl;
     
@@ -106,7 +109,7 @@ int main()
             if (isAntyalia == false)
             {
                 r = cam->getRay(u, v, fov, fov / 45, false);
-                LightIntensity newColor = finalColor.GetColorFromRay(r, world);
+                LightIntensity newColor = finalColor.GetColorFromRay(r, world, 0);
 
                 perspective->SetPixel(i, j, newColor);
             }

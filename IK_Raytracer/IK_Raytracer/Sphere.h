@@ -2,6 +2,7 @@
 #include "vec3.h"
 #include "Ray.h"
 #include "Hitable.h"
+#include "Material.h"
 
 class Sphere : public Hitable
 {
@@ -11,8 +12,9 @@ private:
 	vec3 color;
 
 public:
+	Material* sphereMaterial;
 	Sphere() : center(0, 0, 0), radius(0.1f), color(255, 255, 0) {};
-	Sphere(vec3 cen, float r, vec3 col) : center(cen), radius(r), color(col) {};
+	Sphere(vec3 cen, float r, vec3 col, Material* sphMaterial) : center(cen), radius(r), color(col), sphereMaterial(sphMaterial) {};
 
 	//vec3* intersect(Ray& a_Ray);
 	bool hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const;
@@ -35,6 +37,7 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 			rec.p = r.pointAtParameter(rec.t);
 			rec.normal = (rec.p - center) / radius;
 			rec.hitColor = color;
+			rec.materialPtr = sphereMaterial;
 
 			return true;
 		}
@@ -45,6 +48,7 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 			rec.p = r.pointAtParameter(rec.t);
 			rec.normal = (rec.p - center) / radius;
 			rec.hitColor = color;
+			rec.materialPtr = sphereMaterial;
 			
 			return true;
 		}

@@ -141,9 +141,12 @@
   <ItemGroup>
     <ClCompile Include="IK_Raytracer.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Lambertian.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightIntensity.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Metal.cpp" />
     <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -156,9 +159,12 @@
     <ClInclude Include="Hitable.h" />
     <ClInclude Include="HitableList.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="Lambertian.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightIntensity.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Metal.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PointLight.h" />

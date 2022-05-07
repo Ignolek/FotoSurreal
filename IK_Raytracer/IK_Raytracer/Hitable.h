@@ -1,7 +1,8 @@
 #ifndef HITABLEH
 #define HITABLEH
-
 #include "Ray.h"
+
+class Material;
 
 struct hitRecord
 {
@@ -9,6 +10,7 @@ struct hitRecord
 	vec3 p;
 	vec3 normal;
 	vec3 hitColor;
+	Material* materialPtr = nullptr;
 };
 
 class Hitable 

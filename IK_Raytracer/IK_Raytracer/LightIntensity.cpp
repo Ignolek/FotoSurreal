@@ -1,5 +1,6 @@
 #include "LightIntensity.h"
 #include "Ray.h"
+#include "Material.h"
 
 void LightIntensity::add(double R, double G, double B)
 {
@@ -41,6 +42,15 @@ LightIntensity LightIntensity::operator*(float num)
 	Result.r = (this->r * num);
 	Result.g = (this->g * num);
 	Result.b = (this->b * num);
+	return Result;
+}
+
+LightIntensity LightIntensity::operator*(vec3 v)
+{
+	LightIntensity Result;
+	Result.r = (this->r * v.r());
+	Result.g = (this->g * v.g());
+	Result.b = (this->b * v.b());
 	return Result;
 }
 
@@ -108,27 +118,27 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	if (colors[LEFT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMin, fov, m, ortho);
-		colors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray,world));
+		colors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray,world, 0));
 	}
 	if (colors[RIGHT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMin, fov, m, ortho);
-		colors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 	if (colors[RIGHT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMax, fov, m, ortho);
-		colors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 	if (colors[LEFT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMax, fov, m, ortho);
-		colors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 	if (colors[CENTER] == nullptr)
 	{
 		ray = camera->getRay((xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, fov, m, ortho);
-		colors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 
 	if (w < maxSteps || *colors[LEFT_UPPER] == *colors[CENTER])
@@ -198,20 +208,31 @@ LightIntensity operator*(float num, LightIntensity& li)
 //	return Result;
 //}
 
-LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world)
+LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, int depth)
 {
 	hitRecord rec;
-	if (world->hit(r, 0.0, 100, rec) == true)
+	if (world->hit(r, 0.01, 100, rec) == true) // (r, 0.0, 100, rec) // change second paremetere (0.01) to sth like 0.00001 to fix mesh but fuck up sphere
 	{
-		LightIntensity result;
-		for (Light* l : lightArray)
+		Ray scattered;
+		vec3 attenuation;
+		if (depth < 50 && rec.materialPtr->scatter(r, rec, attenuation, scattered))
 		{
-			vec3 res = l->getDiffuse(vec3(0.0f, 0.0f, 0.0f), rec.p);
-			result = LightIntensity(res.x(), res.y(), res.z());
+			return GetColorFromRay(scattered, world, depth + 1) * attenuation;
+		}
+		else
+		{
+			return LightIntensity(200, 50, 50);
 		}
 		//return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
-		return LightIntensity(result.getRed() + rec.hitColor.e[0], result.getGreen() + rec.hitColor.e[1], result.getBlue() + rec.hitColor.e[2]);
-		//return LightIntensity(255.99 * (rec.normal.x() + 1) * 0.5f, 255.99 * (rec.normal.y() + 1) * 0.5f, 255.99 * (rec.normal.z() + 1) * 0.5f);
+		// 
+		// Return light sources calculated color
+		//LightIntensity result;
+		//for (Light* l : lightArray)
+		//{
+		//	vec3 res = l->getDiffuse(vec3(0.0f, 0.0f, 0.0f), rec.p);
+		//	result = LightIntensity(res.x(), res.y(), res.z());
+		//}
+		//return LightIntensity(result.getRed() + rec.hitColor.e[0], result.getGreen() + rec.hitColor.e[1], result.getBlue() + rec.hitColor.e[2]);
 	}
 	else
 	{
