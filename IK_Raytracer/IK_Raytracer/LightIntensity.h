@@ -3,6 +3,7 @@
 #include <vector>
 #include "Hitable.h"
 #include "Camera.h"
+#include "Light.h"
 
 #define LEFT_UPPER 0
 #define RIGHT_UPPER 1
@@ -15,6 +16,8 @@ class LightIntensity
 protected:
 	double r, g, b = 0.0f;
 	float maxSteps = 0.125f;
+
+	std::vector<Light*> lightArray;
 public:
 	LightIntensity(double R, double G, double B) { r = R; g = G; b = B; }
 	LightIntensity(double R, double G) { r = R; g = G; b = 0.0f; }
@@ -50,5 +53,7 @@ public:
 	LightIntensity Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> colors);
 
 	LightIntensity GetColorFromRay(const Ray& r, Hitable* world);
+
+	void AddLightToCalculate(Light* source);
 };
 

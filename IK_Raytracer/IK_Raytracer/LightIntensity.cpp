@@ -203,7 +203,14 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world)
 	hitRecord rec;
 	if (world->hit(r, 0.0, 100, rec) == true)
 	{
-		return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
+		LightIntensity result;
+		for (Light* l : lightArray)
+		{
+			vec3 res = l->getDiffuse(vec3(0.0f, 0.0f, 0.0f), rec.p);
+			result = LightIntensity(res.x(), res.y(), res.z());
+		}
+		//return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
+		return LightIntensity(result.getRed() + rec.hitColor.e[0], result.getGreen() + rec.hitColor.e[1], result.getBlue() + rec.hitColor.e[2]);
 		//return LightIntensity(255.99 * (rec.normal.x() + 1) * 0.5f, 255.99 * (rec.normal.y() + 1) * 0.5f, 255.99 * (rec.normal.z() + 1) * 0.5f);
 	}
 	else
@@ -215,4 +222,9 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world)
 
 		return LightIntensity(135, 206, 250);
 	}
+}
+
+void LightIntensity::AddLightToCalculate(Light* source)
+{
+	lightArray.push_back(source);
 }

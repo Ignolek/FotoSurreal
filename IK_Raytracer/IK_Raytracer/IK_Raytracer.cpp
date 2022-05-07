@@ -11,6 +11,7 @@
 #include "HitableList.h"
 #include "ObjParser.h"
 #include "Mesh.h"
+#include "PointLight.h"
 
 int main()
 {
@@ -42,7 +43,14 @@ int main()
     std::vector<vec3> vertices, indices;
 
     // Assigning vertices and indices;
-    parser.ParseFile("cubeTri.obj", vertices, indices);
+    parser.ParseFile("Cone.obj", vertices, indices);
+
+    PointLight* point = new PointLight();
+    point->location = vec3(0, 0, 0);
+    point->sourceColor = vec3(255, 255, 255);
+    point->linearAttenuation = 0.7;
+    point->constAttenuation = 3.0;
+    point->quadAttenuation = 0.0001;
 
     // Mesh made from parsed obj file
     Mesh* cube = new Mesh(vertices, indices, 0.5f, vec3(3, 0, 0)); // 1. vertices of object 2. indices of object 3. scale 4. position
@@ -51,7 +59,7 @@ int main()
     indices.clear();
 
     // Second object creation:
-    parser.ParseFile("coneBlend2.obj", vertices, indices);
+    parser.ParseFile("cube.obj", vertices, indices);
 
     Mesh* cone = new Mesh(vertices, indices, 0.5f, vec3(-3, 0, 0));
     cone->addToWorld(&hitables);
@@ -72,6 +80,9 @@ int main()
         {
             Ray r;
             LightIntensity finalColor;
+            
+            finalColor.AddLightToCalculate(point);
+            //finalColor = point.getDiffuse(vec3(0,0,0), vec3())
 
             float u = float(i) / float(scrWidth);
             float v = float(j) / float(scrHeight);
