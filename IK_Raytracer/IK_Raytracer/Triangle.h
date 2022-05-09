@@ -10,6 +10,7 @@ class Triangle : public Hitable
 {
 public:
 	vec3 tA, tB, tC;
+	vec3 nX;
 	bool _hit = false;
 	vec3 color;
 
@@ -17,7 +18,12 @@ public:
 	Material* triangleMaterial;
 
 	Triangle() : tA(1, 0, 0), tB(0, 1, 0), tC(0, 0, 1){}
-	Triangle(const vec3 _a, const vec3 _b, const vec3 _c, vec3 col, Material* triMaterial) : tA(_a), tB(_b), tC(_c), color(col), triangleMaterial(triMaterial){}
+	Triangle(const vec3 _a, const vec3 _b, const vec3 _c, 
+			 const vec3 _nX,
+			 vec3 col, Material* triMaterial) 
+			: tA(_a), tB(_b), tC(_c), 
+			  nX(_nX), 
+			  color(col), triangleMaterial(triMaterial){}
 	~Triangle();
 
 	vec3 getTriangleNormal() const
@@ -36,6 +42,22 @@ public:
 		return normal;
 	}
 
+	virtual vec3 getNormalAt(vec3 point) const
+	{
+		vec3 normal = vec3(0, 0, 0);
+		vec3 CA(tC.e[0] - point.e[0],
+				tC.e[1] - point.e[1],
+				tC.e[2] - point.e[2]);
+
+		vec3 BA(tB.e[0] - point.e[0],
+				tB.e[1] - point.e[1],
+				tB.e[2] - point.e[2]);
+
+		normal = normalize(cross(CA, BA));
+
+		return normal;
+	}
+
 	double getTriangleDistance() const
 	{
 		vec3 normal = vec3(0, 0, 0);
@@ -47,13 +69,6 @@ public:
 		return distance;
 	}
 
-	virtual vec3 getNormalAt(vec3 point) const
-	{
-		vec3 normal = vec3(0, 0, 0);
-		normal = getTriangleNormal();
-
-		return normal;
-	}
 
 	bool hit(const Ray& ray, float tMin, float tMax, hitRecord& rec) const
 	{
@@ -122,7 +137,7 @@ public:
 				// inside triangle
 				rec.t = -1 * b / a;
 				rec.p = Q;
-				rec.normal = normal;
+				rec.normal = getNormalAt(Q);
 				rec.hitColor = color;
 				rec.materialPtr = triangleMaterial;
 

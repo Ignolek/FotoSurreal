@@ -211,7 +211,7 @@ LightIntensity operator*(float num, LightIntensity& li)
 LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, int depth)
 {
 	hitRecord rec;
-	if (world->hit(r, 0.01, 100, rec) == true) // (r, 0.0, 100, rec) // change second paremetere (0.01) to sth like 0.00001 to fix mesh but fuck up sphere
+	if (world->hit(r, 0.001, 100, rec)) // (r, 0.0, 100, rec) // change second paremetere (0.01) to sth like 0.00001 to fix mesh but fuck up sphere
 	{
 		Ray scattered;
 		vec3 attenuation;
@@ -221,26 +221,23 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, int
 		}
 		else
 		{
-			return LightIntensity(200, 50, 50);
+			//return LightIntensity(0, 0, 0);
+			return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
 		}
-		//return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
-		// 
+		
 		// Return light sources calculated color
-		//LightIntensity result;
-		//for (Light* l : lightArray)
-		//{
-		//	vec3 res = l->getDiffuse(vec3(0.0f, 0.0f, 0.0f), rec.p);
-		//	result = LightIntensity(res.x(), res.y(), res.z());
-		//}
-		//return LightIntensity(result.getRed() + rec.hitColor.e[0], result.getGreen() + rec.hitColor.e[1], result.getBlue() + rec.hitColor.e[2]);
+		LightIntensity result;
+		/*for (Light* l : lightArray)
+		{
+			vec3 res = l->getDiffuse(vec3(0.0f, 0.0f, 0.0f), rec.p);
+			result = LightIntensity(res.x(), res.y(), res.z());
+		}
+		return LightIntensity(std::sqrt(result.getRed() + rec.hitColor.e[0]), 
+							  std::sqrt(result.getGreen() + rec.hitColor.e[1]), 
+							  std::sqrt(result.getBlue() + rec.hitColor.e[2]));*/
 	}
 	else
 	{
-		/*vec3 unitDirection = unit_vector(r.direction());
-		float t = 0.5 * (unitDirection.y() + 1.0);
-		LightIntensity result = LightIntensity(1.0, 1.0, 1.0) * (1.0 - t) + LightIntensity(0.5, 0.7, 1.0) * t;
-		return LightIntensity(result.getRed() * 255.99, result.getGreen() * 255.99, result.getBlue() * 255.99);*/
-
 		return LightIntensity(135, 206, 250);
 	}
 }

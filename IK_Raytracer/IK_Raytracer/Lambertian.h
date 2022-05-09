@@ -8,7 +8,7 @@ public:
 	Lambertian(const vec3& a) : albedo(a){}
 	virtual bool scatter(const Ray& r_in, const hitRecord& rec, vec3& attenuation, Ray& scattered) const
 	{
-		vec3 target = rec.p + rec.normal; //+ randomInUnitSphere();
+		vec3 target = rec.p + rec.normal + Material::randomInUnitSphere();
 		scattered = Ray(rec.p, target - rec.p);
 		attenuation = albedo;
 		return true;
