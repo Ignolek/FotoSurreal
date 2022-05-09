@@ -54,12 +54,12 @@ int main()
     std::vector<vec3> vertices, indices, normals, normalsFaces;
 
     // Assigning vertices and indices;
-    parser.ParseFile("cubeBlend.obj", vertices, indices, normals, normalsFaces);
-    // Mesh made from parsed obj file
-    Mesh* cube = new Mesh(vertices, indices, normals, normalsFaces, 1.0f, vec3(-3, 1, 2), new Metal(vec3(0.8, 0.8, 0.8), 0.7)); // 1. vertices of object 2. indices of object 3. scale 4. position
-    cube->addToWorld(&hitables);
-    vertices.clear();
-    indices.clear();
+    //parser.ParseFile("cubeBlend.obj", vertices, indices, normals, normalsFaces);
+    //// Mesh made from parsed obj file
+    //Mesh* cube = new Mesh(vertices, indices, normals, normalsFaces, 1.0f, vec3(-3, 1, 2), new Metal(vec3(0.8, 0.8, 0.8), 0.7)); // 1. vertices of object 2. indices of object 3. scale 4. position
+    //cube->addToWorld(&hitables);
+    //vertices.clear();
+    //indices.clear();
 
     // Second object creation:
     /*parser.ParseFile("cone.obj", vertices, indices);
@@ -69,8 +69,12 @@ int main()
     vertices.clear();
     indices.clear();*/
 
-    Hitable* sphere = new Sphere(vec3(3, 2, 0), 3, vec3(0, 0, 0), new Metal(vec3(0.2, 0.8, 0.2), 0.7));
+    Hitable* sphere = new Sphere(vec3(5, 2, 0), 3, vec3(0, 0, 0), new Metal(vec3(0.8, 0.8, 0.8), 0.2));
     hitables.push_back(sphere);
+    Hitable* sphere1 = new Sphere(vec3(0, 2, 0), 2, vec3(0, 0, 0), new Lambertian(vec3(0.2, 0.2, 0.8)));
+    hitables.push_back(sphere1);    
+    Hitable* sphere2 = new Sphere(vec3(-5, 2, 0), 3, vec3(0, 0, 0), new Metal(vec3(0.8, 0.5, 0.5), 0.6));
+    hitables.push_back(sphere2);
  
     // green sphere which simulates ground
     Hitable* ground = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 154, 23), new Lambertian(vec3(0.4, 0.8, 0.4)));
