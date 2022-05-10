@@ -49,6 +49,6 @@ public:
 
 	LightIntensity Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> colors);
 
-	LightIntensity GetColorFromRay(const Ray& r, Hitable* world);
+	LightIntensity GetColorFromRay(const Ray& r, Hitable* world, int bounce);
 };
 

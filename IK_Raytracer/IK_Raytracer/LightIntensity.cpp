@@ -1,4 +1,6 @@
 #include "LightIntensity.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
 #include "Ray.h"
 
 void LightIntensity::add(double R, double G, double B)
@@ -108,27 +110,27 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	if (colors[LEFT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMin, fov, m, ortho);
-		colors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray,world));
+		colors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray,world, 0));
 	}
 	if (colors[RIGHT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMin, fov, m, ortho);
-		colors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 	if (colors[RIGHT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMax, fov, m, ortho);
-		colors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 	if (colors[LEFT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMax, fov, m, ortho);
-		colors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 	if (colors[CENTER] == nullptr)
 	{
 		ray = camera->getRay((xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, fov, m, ortho);
-		colors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world));
+		colors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
 	}
 
 	if (w < maxSteps || *colors[LEFT_UPPER] == *colors[CENTER])
@@ -198,21 +200,18 @@ LightIntensity operator*(float num, LightIntensity& li)
 //	return Result;
 //}
 
-LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world)
+LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, int bounce)
 {
 	hitRecord rec;
-	if (world->hit(r, 0.0, 100, rec) == true)
+	DirectionalLight dirLight(vec3(1.0, 0.9, 0.7), vec3(3, -1, -1));
+	if (world->hit(r, 0.0, 100, rec))
 	{
-		return LightIntensity(rec.hitColor.e[0], rec.hitColor.e[1], rec.hitColor.e[2]);
-		//return LightIntensity(255.99 * (rec.normal.x() + 1) * 0.5f, 255.99 * (rec.normal.y() + 1) * 0.5f, 255.99 * (rec.normal.z() + 1) * 0.5f);
+		vec3 color = dirLight.getDiffuse(rec);
+	
+		return LightIntensity(rec.materialPtr->mDiffuse.r() * color.r(), rec.materialPtr->mDiffuse.g() * color.g(), rec.materialPtr->mDiffuse.b() * color.b());
 	}
 	else
 	{
-		/*vec3 unitDirection = unit_vector(r.direction());
-		float t = 0.5 * (unitDirection.y() + 1.0);
-		LightIntensity result = LightIntensity(1.0, 1.0, 1.0) * (1.0 - t) + LightIntensity(0.5, 0.7, 1.0) * t;
-		return LightIntensity(result.getRed() * 255.99, result.getGreen() * 255.99, result.getBlue() * 255.99);*/
-
-		return LightIntensity(135, 206, 250);
+		return LightIntensity(dirLight.color.r() * 255.0f, dirLight.color.g() * 255.0f, dirLight.color.b() * 255.0f);
 	}
 }

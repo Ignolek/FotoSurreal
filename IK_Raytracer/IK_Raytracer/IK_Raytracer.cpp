@@ -11,18 +11,21 @@
 #include "HitableList.h"
 #include "ObjParser.h"
 #include "Mesh.h"
+#include "Material.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
 
 int main()
 {
     // Screen resolution
-    int scrWidth = 1000;
-    int scrHeight = 500;
+    int scrWidth = 500;
+    int scrHeight = 250;
 
     // Image
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     // Camera and rays settings
-    float fov = 45.0f;
+    float fov = 90.0f;
     Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
@@ -41,26 +44,34 @@ int main()
     ObjParser parser;
     std::vector<vec3> vertices, indices;
 
-    // Assigning vertices and indices;
-    parser.ParseFile("cubeTri.obj", vertices, indices);
+    //// Assigning vertices and indices;
+    //parser.ParseFile("cubeTri.obj", vertices, indices);
 
-    // Mesh made from parsed obj file
-    Mesh* cube = new Mesh(vertices, indices, 0.5f, vec3(3, 0, 0)); // 1. vertices of object 2. indices of object 3. scale 4. position
-    cube->addToWorld(&hitables);
-    vertices.clear();
-    indices.clear();
+    ////// Mesh made from parsed obj file
+    //Mesh* cube = new Mesh(vertices, indices, 2, vec3(3, 1, 0) ,new Material(vec3(200, 20, 20), vec3(200, 50, 23), vec3(0, 0, 0))); // 1. vertices of object 2. indices of object 3. scale 4. position
+    //cube->addToWorld(&hitables);
+    //vertices.clear();
+    //indices.clear();
 
-    // Second object creation:
-    parser.ParseFile("coneBlend2.obj", vertices, indices);
+    ////// Second object creation:
+    //parser.ParseFile("coneBlend2.obj", vertices, indices);
+    //
+    //Mesh* cone = new Mesh(vertices, indices, 3, vec3(-3, 1, 0), new Material(vec3(200, 20, 20), vec3(0, 250, 250), vec3(0, 0, 0)));
+    //cone->addToWorld(&hitables);
+    //vertices.clear();
+    //indices.clear();
 
-    Mesh* cone = new Mesh(vertices, indices, 0.5f, vec3(-3, 0, 0));
-    cone->addToWorld(&hitables);
-    vertices.clear();
-    indices.clear();
+    
  
     // green sphere which simulates ground
-    Hitable* ground = new Sphere(vec3(0, -100.5, -1), 100, vec3(0, 154, 23));
+    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(100, 200, 200), vec3(0, 154, 23), vec3(0, 0, 0)));
     hitables.push_back(ground);
+    
+    Hitable* sphere = new Sphere(vec3(3, 1, -1), 2, vec3(0, 154, 23), new Material(vec3(100, 200, 200), vec3(200, 200, 50), vec3(0, 0, 0)));
+    hitables.push_back(sphere);
+    
+    Hitable* sphere1 = new Sphere(vec3(-3, 3, -1), 2, vec3(0, 154, 23), new Material(vec3(100, 200, 200), vec3(200, 200, 200), vec3(0, 0, 0)));
+    hitables.push_back(sphere1);
     std::cout << hitables.size() << std::endl;
     
     // pass hitables to world
@@ -95,7 +106,7 @@ int main()
             if (isAntyalia == false)
             {
                 r = cam->getRay(u, v, fov, fov / 45, false);
-                LightIntensity newColor = finalColor.GetColorFromRay(r, world);
+                LightIntensity newColor = finalColor.GetColorFromRay(r, world, 0);
 
                 perspective->SetPixel(i, j, newColor);
             }

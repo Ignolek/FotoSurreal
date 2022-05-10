@@ -1,10 +1,11 @@
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector<vec3> meshVert, std::vector<vec3> meshIndi, float scl, vec3 pos)
+Mesh::Mesh(std::vector<vec3> meshVert, std::vector<vec3> meshIndi, float scl, vec3 pos, Material* meshMat)
 {
 	vertices = meshVert;
 	indices = meshIndi;
 	position = pos;
+	meshMaterial = meshMat;
 
 	scale = scl;
 
@@ -13,7 +14,7 @@ Mesh::Mesh(std::vector<vec3> meshVert, std::vector<vec3> meshIndi, float scl, ve
 		Hitable* meshTriangle = new Triangle(vertices.at(indices.at(i).x()) * scale - position,
 							vertices.at(indices.at(i).y()) * scale - position,
 							vertices.at(indices.at(i).z()) * scale - position, 
-							vec3(200, 50, 50));
+							meshMaterial);
 		mesh.push_back(meshTriangle);
 	}
 }
