@@ -18,8 +18,8 @@
 int main()
 {
     // Screen resolution
-    int scrWidth = 500;
-    int scrHeight = 250;
+    int scrWidth = 2000;
+    int scrHeight = 1000;
 
     // Image
     Image* perspective = new Image(scrWidth, scrHeight, 3);
@@ -64,13 +64,13 @@ int main()
     
  
     // green sphere which simulates ground
-    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(100, 200, 200), vec3(0, 154, 23), vec3(0, 0, 0)));
+    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(0, 45, 6), vec3(0, 154, 23), vec3(0, 0, 0)));
     hitables.push_back(ground);
     
-    Hitable* sphere = new Sphere(vec3(3, 1, -1), 2, vec3(0, 154, 23), new Material(vec3(100, 200, 200), vec3(200, 200, 50), vec3(0, 0, 0)));
+    Hitable* sphere = new Sphere(vec3(3, 1, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 15), vec3(200, 200, 50), vec3(0, 0, 0)));
     hitables.push_back(sphere);
     
-    Hitable* sphere1 = new Sphere(vec3(-3, 3, -1), 2, vec3(0, 154, 23), new Material(vec3(100, 200, 200), vec3(200, 200, 200), vec3(0, 0, 0)));
+    Hitable* sphere1 = new Sphere(vec3(-3, 3, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 60), vec3(200, 200, 200), vec3(0, 0, 0)));
     hitables.push_back(sphere1);
     std::cout << hitables.size() << std::endl;
     

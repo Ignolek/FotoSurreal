@@ -6,10 +6,10 @@ vec3 DirectionalLight::getDiffuse(hitRecord& rec)
 	return vec3(getRed(), getGreen(), getBlue());
 }
 
-vec3 DirectionalLight::getSpecular(hitRecord& rec)
+vec3 DirectionalLight::getSpecular(hitRecord& rec, vec3 cameraPos)
 {
-	this->lightColor = rec.materialPtr->mSpecular;
-	return vec3(0, 0, 0);
+	//color *= dot()
+	return vec3(getRed(), getGreen(), getBlue());
 }
 
 bool DirectionalLight::isInShadow(hitRecord& rec)
