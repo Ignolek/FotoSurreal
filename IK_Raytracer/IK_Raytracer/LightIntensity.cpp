@@ -215,10 +215,11 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	std::vector<PointLight> pointLights;
 	std::vector<DirectionalLight> directionalLights;
 
+	//Add lights to calculate
 	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 0.1, 0), 0.5f, 1.0f, 5.0f));
 	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(-6, 3, 5), 0.5f, 1.0f, 5.0f));
 
-	directionalLights.push_back(DirectionalLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(30000, -10000, -30000)));
+	directionalLights.push_back(DirectionalLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(0, -3, -1)));
 
 	if (world->hit(r, 0.0, 100, rec))
 	{
