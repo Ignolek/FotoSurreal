@@ -12,7 +12,7 @@ vec3 PointLight::getDiffuse(hitRecord& rec)
 	diffuseColor *= dot(normalize(rec.normal), normalize(unit_vector(lightDir)));
 	diffuseColor /= finalAttenuation;
 	
-	return vec3(getRed(diffuseColor.r()), getGreen(diffuseColor.g()), getBlue(diffuseColor.b()));
+	return vec3(getRed(diffuseColor.r()), getGreen(diffuseColor.g()), getBlue(diffuseColor.b())) * 100;
 }
 vec3 PointLight::getSpecular(hitRecord& rec, vec3 cameraPos, float shininess)
 {
