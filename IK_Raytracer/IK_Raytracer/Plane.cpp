@@ -13,7 +13,7 @@ Plane::Plane(const Plane& P)
     d = P.d;
 }
 
-Plane::Plane(float a, float b, float c, float d)
+Plane::Plane(float a, float b, float c, float d, Material* planeMaterial) : planeMat(planeMaterial)
 {
     this->a = a;
     this->b = b;
@@ -21,7 +21,7 @@ Plane::Plane(float a, float b, float c, float d)
     this->d = d;
 }
 
-Plane::Plane(const vec3& Pt, const vec3& V1, const vec3& V2)
+Plane::Plane(const vec3& Pt, const vec3& V1, const vec3& V2, Material* planeMaterial) : planeMat(planeMaterial)
 {
     vec3 Normal = cross(V1, V2);
     a = ConstructFromPointNormal(Pt, Normal).a;
@@ -73,6 +73,7 @@ bool Plane::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
             rec.t = temp;
             rec.p = r.pointAtParameter(rec.t);
             rec.normal = vec3(a, b, c);
+            rec.materialPtr = planeMat;
 
             return true;
         }

@@ -4,13 +4,17 @@
 class PointLight : public Light
 {
 public:
+	vec3 diffuseColor;
+	vec3 specularColor;
+
 	vec3 location;
 	float attenuation;
 	float linearAttenuation;
 	float quatAttenuation;
 
-	
-	vec3 getDiffuse();
-	vec3 getSpecular();
+	PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten);
+	vec3 getDiffuse(hitRecord& rec);
+	vec3 getSpecular(hitRecord& rec, vec3 cameraPos, float shininess);
+	float calculateDistanceToPointLight(hitRecord& rec);
 };
 

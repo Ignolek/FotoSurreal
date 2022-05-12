@@ -12,9 +12,5 @@ public:
 	vec3 getSpecular(hitRecord& rec, vec3 cameraPos, float shininess);
 
 	bool isInShadow(hitRecord& rec);
-
-	float getRed(float red);
-	float getGreen(float green);
-	float getBlue(float blue);
 };
 

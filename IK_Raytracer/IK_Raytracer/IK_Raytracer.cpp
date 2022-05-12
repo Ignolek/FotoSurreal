@@ -18,14 +18,14 @@
 int main()
 {
     // Screen resolution
-    int scrWidth = 2000;
-    int scrHeight = 1000;
+    int scrWidth = 500;
+    int scrHeight = 250;
 
     // Image
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     // Camera and rays settings
-    float fov = 45.0f;
+    float fov = 90.0f;
     Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
@@ -64,19 +64,31 @@ int main()
     
  
     // green sphere which simulates ground
-    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(0, 45, 6), vec3(0, 154, 23), vec3(255, 255, 255), 256));
+    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(0, 154, 23), vec3(255, 255, 255), 256));
     hitables.push_back(ground);
+
     
-    Hitable* sphere = new Sphere(vec3(6, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 15), vec3(200, 200, 50), vec3(255, 255, 255), 32));
+    Hitable* sphere = new Sphere(vec3(4, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 200, 50), vec3(255, 255, 255), 32));
     hitables.push_back(sphere);
     
-    Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(6, 6, 6), vec3(30, 30, 30), vec3(255, 255, 255), 128));
-    hitables.push_back(sphere1);
-    std::cout << hitables.size() << std::endl;
+    /*Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(30, 30, 30), vec3(255, 255, 255), 128));
+    hitables.push_back(sphere1);*/
     
-    Hitable* sphere2 = new Sphere(vec3(-6, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 0, 0), vec3(200, 0, 0), vec3(255, 255, 255), 16));
+    Hitable* sphere2 = new Sphere(vec3(-4, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 0, 0), vec3(255, 255, 255), 32));
     hitables.push_back(sphere2);
+
+    Hitable* sphere3 = new Sphere(vec3(-9, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 200, 0), vec3(255, 255, 255), 32));
+    hitables.push_back(sphere3);
+
+    Hitable* sphere4 = new Sphere(vec3(9, 3, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 0, 200), vec3(255, 255, 255), 32));
+    hitables.push_back(sphere4);
+
     std::cout << hitables.size() << std::endl;
+
+    //Hitable* plane = new Plane(vec3(0, 5, 0), vec3(5, 0, 0), vec3(0, 5, 0), new Material(vec3(0, 0, 0), vec3(0.1, 154, 23), vec3(255, 255, 255), 256));
+    //Hitable* plane = new Plane(1, -4, 4, -1, new Material(vec3(0, 0, 0), vec3(0.1, 154, 23), vec3(255, 255, 255), 256));
+    //hitables.push_back(plane);
+
     
     // pass hitables to world
     Hitable* world = new HitableList(hitables);

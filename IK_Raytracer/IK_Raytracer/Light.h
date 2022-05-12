@@ -13,8 +13,8 @@ public:
 	void add(vec3 colorToAdd);
 	void sub(vec3 colorToSub);
 
-	float getRed();
-	float getGreen();
-	float getBlue();
+	float getRed(float red);
+	float getGreen(float green);
+	float getBlue(float blue);
 };
 

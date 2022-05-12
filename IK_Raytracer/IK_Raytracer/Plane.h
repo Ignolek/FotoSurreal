@@ -2,16 +2,18 @@
 #include "vec3.h"
 #include "Ray.h"
 #include "Hitable.h"
+#include "Material.h"
 
 class Plane : public Hitable
 {
 public:
-    float a, b, c, d;        //the (a, b, c, d) in a*x + b*y + c*z + d = 0.
+    float a, b, c, d;        //the (a, b, c, d) in a*x + b*y + c*z + d = 0
+    Material* planeMat;
 
     Plane();
     Plane(const Plane& P);
-    Plane(float a, float b, float c, float d);
-    Plane(const vec3& Pt, const vec3& V1, const vec3& V2);
+    Plane(float a, float b, float c, float d, Material* planeMaterial);
+    Plane(const vec3& Pt, const vec3& V1, const vec3& V2, Material* planeMaterial);
 
     static Plane ConstructFromPointNormal(const vec3& Pt, const vec3& Normal);
     static Plane ConstructFromPointVectors(const vec3& Pt, const vec3& V1, const vec3& V2);

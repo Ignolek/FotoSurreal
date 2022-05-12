@@ -21,24 +21,3 @@ bool DirectionalLight::isInShadow(hitRecord& rec)
 	
 	return false;
 }
-
-float DirectionalLight::getRed(float red)
-{
-	if (red >= 1.0f) { return 1.0f; }
-	else if (red <= 0.0f) { return 0.0f; }
-	else { return red; }
-}
-
-float DirectionalLight::getGreen(float green)
-{
-	if (green >= 1.0f) { return 1.0f; }
-	else if (green <= 0.0f) { return 0.0f; }
-	else { return green; }
-}
-
-float DirectionalLight::getBlue(float blue)
-{
-	if (blue >= 1.0f) { return 1.0f; }
-	else if (blue <= 0.0f) { return 0.0f; }
-	else { return blue; }
-}

@@ -19,23 +19,24 @@ void Light::sub(vec3 colorToSub)
 	}
 }
 
-float Light::getRed()
+
+float Light::getRed(float red)
 {
-	if (lightColor.r() >= 1.0f) {return 1.0f;}
-	else if (lightColor.r() <= 0.0f) {return 0.0f;}
-	else {return lightColor.r();}
+	if (red >= 1.0f) { return 1.0f; }
+	else if (red <= 0.0f) { return 0.0f; }
+	else { return red; }
 }
 
-float Light::getGreen()
+float Light::getGreen(float green)
 {
-	if (lightColor.g() >= 1.0f) {return 1.0f;}
-	else if (lightColor.g() <= 0.0f) {return 0.0f;}
-	else {return lightColor.g();}
+	if (green >= 1.0f) { return 1.0f; }
+	else if (green <= 0.0f) { return 0.0f; }
+	else { return green; }
 }
 
-float Light::getBlue()
+float Light::getBlue(float blue)
 {
-	if (lightColor.b() >= 1.0f) {return 1.0f;}
-	else if (lightColor.b() <= 0.0f) {return 0.0f;}
-	else {return lightColor.b();}
+	if (blue >= 1.0f) { return 1.0f; }
+	else if (blue <= 0.0f) { return 0.0f; }
+	else { return blue; }
 }
