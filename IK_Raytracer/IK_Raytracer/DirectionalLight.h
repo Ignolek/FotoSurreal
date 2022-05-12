@@ -9,7 +9,7 @@ public:
 
 	DirectionalLight(vec3 diffCol, vec3 specCol, vec3 dir) : diffColor(diffCol), specColor(specCol), direction(dir){}
 	vec3 getDiffuse(hitRecord& rec);
-	vec3 getSpecular(hitRecord& rec, vec3 cameraPos);
+	vec3 getSpecular(hitRecord& rec, vec3 cameraPos, float shininess);
 
 	bool isInShadow(hitRecord& rec);
 

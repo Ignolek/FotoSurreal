@@ -218,7 +218,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	//DirectionalLight dirLight2(vec3(0.9, 0.9, 0.2), vec3(-3, -1, -1));
 	if (world->hit(r, 0.0, 100, rec))
 	{
-		specularColor = dirLight.getSpecular(rec, -cameraPosition);
+		specularColor = dirLight.getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
 		diffuseColor = dirLight.getDiffuse(rec);
 
 		return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r() * 1), 
