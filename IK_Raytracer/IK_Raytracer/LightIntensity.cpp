@@ -212,25 +212,25 @@ LightIntensity LightIntensity::operator*(vec3 v)
 LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, int bounce)
 {
 	hitRecord rec;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	DirectionalLight dirLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(30000, -10000, -30000));
-	PointLight pointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 1, 5), 0.5f, 1.0f, 5.0f);
 	if (world->hit(r, 0.0, 100, rec))
 	{
+		vec3 diffuseColor;
+		vec3 specularColor;
+		DirectionalLight dirLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(30000, -10000, -30000));
+		PointLight pointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 0.1, 0), 0.5f, 1.0f, 5.0f);
 		specularColor = pointLight.getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
-		diffuseColor = pointLight.getDiffuse(rec);
+		diffuseColor =  pointLight.getDiffuse(rec);
 
 		/*return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r() * 1), 
 							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g() * 1), 
 							  blue(rec.materialPtr->mAmbient.b()  + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b() * 1));*/
-		return LightIntensity(red(rec.materialPtr->mAmbient.r() + rec.materialPtr->mDiffuse.r() * diffuseColor.r() * 100.0f + rec.materialPtr->mSpecular.r() * specularColor.r() * 1),
-							green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() * 100.0f + rec.materialPtr->mSpecular.g() * specularColor.g() * 1),
-							blue(rec.materialPtr->mAmbient.b() + rec.materialPtr->mDiffuse.b()  * diffuseColor.b() * 100.0f + rec.materialPtr->mSpecular.b() * specularColor.b() * 1));
+		return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() * 100.0f + rec.materialPtr->mSpecular.r() * specularColor.r() * 1),
+							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() * 100.0f + rec.materialPtr->mSpecular.g() * specularColor.g() * 1),
+							  blue(rec.materialPtr->mAmbient.b()  + rec.materialPtr->mDiffuse.b() * diffuseColor.b() * 100.0f + rec.materialPtr->mSpecular.b() * specularColor.b() * 1));
 	}
 	else
 	{
-		return LightIntensity(dirLight.diffColor.r() * 255.0f, dirLight.diffColor.g() * 255.0f, dirLight.diffColor.b() * 255.0f);
+		return LightIntensity(0, 50, 200);
 	}
 }
 

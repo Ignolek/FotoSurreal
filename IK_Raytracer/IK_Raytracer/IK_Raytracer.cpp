@@ -17,6 +17,12 @@
 
 int main()
 {
+    Material* blackMat = new Material(vec3(6, 6, 6), vec3(20, 20, 20), vec3(255, 255, 255), 32);
+    Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(40, 100, 0), 8);
+    Material* goldMat = new Material(vec3(20, 20, 0), vec3(255, 255, 0), vec3(255, 255, 255), 64);
+    Material* redMat = new Material(vec3(20, 0, 0), vec3(255, 0, 0), vec3(255, 255, 255), 32);
+    Material* silverMat = new Material(vec3(10, 10, 10), vec3(100, 100, 100), vec3(255, 255, 255), 32);
+    Material* whiteMat = new Material(vec3(30, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 16);
     // Screen resolution
     int scrWidth = 500;
     int scrHeight = 250;
@@ -25,7 +31,7 @@ int main()
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     // Camera and rays settings
-    float fov = 90.0f;
+    float fov = 60.0f;
     Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
@@ -45,13 +51,13 @@ int main()
     std::vector<vec3> vertices, indices;
 
     //// Assigning vertices and indices;
-    //parser.ParseFile("cubeTri.obj", vertices, indices);
+    parser.ParseFile("cubeBlend.obj", vertices, indices);
 
-    ////// Mesh made from parsed obj file
-    //Mesh* cube = new Mesh(vertices, indices, 2, vec3(3, 1, 0) ,new Material(vec3(200, 20, 20), vec3(200, 50, 23), vec3(0, 0, 0))); // 1. vertices of object 2. indices of object 3. scale 4. position
-    //cube->addToWorld(&hitables);
-    //vertices.clear();
-    //indices.clear();
+    //// Mesh made from parsed obj file
+    Mesh* cube = new Mesh(vertices, indices, 3, vec3(0, -5, 5) , blackMat); // 1. vertices of object 2. indices of object 3. scale 4. position
+    cube->addToWorld(&hitables);
+    vertices.clear();
+    indices.clear();
 
     //// Second object creation:
     //parser.ParseFile("cone.obj", vertices, indices);
@@ -64,23 +70,23 @@ int main()
     
  
     // green sphere which simulates ground
-    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(0, 154, 23), vec3(255, 255, 255), 256));
+    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), grassMat);
     hitables.push_back(ground);
 
     
-    Hitable* sphere = new Sphere(vec3(4, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 200, 50), vec3(255, 255, 255), 32));
+    Hitable* sphere = new Sphere(vec3(4, 0, -1), 2, vec3(0, 154, 23), goldMat);
     hitables.push_back(sphere);
     
     /*Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(30, 30, 30), vec3(255, 255, 255), 128));
     hitables.push_back(sphere1);*/
     
-    Hitable* sphere2 = new Sphere(vec3(-4, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 0, 0), vec3(255, 255, 255), 32));
+    Hitable* sphere2 = new Sphere(vec3(-4, 0, -1), 2, vec3(0, 154, 23), redMat);
     hitables.push_back(sphere2);
 
-    Hitable* sphere3 = new Sphere(vec3(-9, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 200, 0), vec3(255, 255, 255), 32));
+    Hitable* sphere3 = new Sphere(vec3(-6, 0, 2), 2, vec3(0, 154, 23), whiteMat);
     hitables.push_back(sphere3);
 
-    Hitable* sphere4 = new Sphere(vec3(9, 3, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(200, 0, 200), vec3(255, 255, 255), 32));
+    Hitable* sphere4 = new Sphere(vec3(6, 0, 2), 2, vec3(0, 154, 23), silverMat);
     hitables.push_back(sphere4);
 
     std::cout << hitables.size() << std::endl;
