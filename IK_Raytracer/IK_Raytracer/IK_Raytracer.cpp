@@ -18,14 +18,14 @@
 int main()
 {
     // Screen resolution
-    int scrWidth = 2000;
-    int scrHeight = 1000;
+    int scrWidth = 1000;
+    int scrHeight = 500;
 
     // Image
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     // Camera and rays settings
-    float fov = 90.0f;
+    float fov = 45.0f;
     Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
@@ -64,14 +64,18 @@ int main()
     
  
     // green sphere which simulates ground
-    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(0, 45, 6), vec3(0, 154, 23), vec3(0, 0, 0)));
+    Hitable* ground = new Sphere(vec3(0, -101, -1), 100, vec3(0, 154, 23), new Material(vec3(0, 45, 6), vec3(0, 154, 23), vec3(255, 255, 255)));
     hitables.push_back(ground);
     
-    Hitable* sphere = new Sphere(vec3(3, 1, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 15), vec3(200, 200, 50), vec3(0, 0, 0)));
+    Hitable* sphere = new Sphere(vec3(7, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 15), vec3(200, 200, 50), vec3(255, 255, 255)));
     hitables.push_back(sphere);
     
-    Hitable* sphere1 = new Sphere(vec3(-3, 3, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 60), vec3(200, 200, 200), vec3(0, 0, 0)));
+    Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 60), vec3(200, 200, 200), vec3(255, 255, 255)));
     hitables.push_back(sphere1);
+    std::cout << hitables.size() << std::endl;
+    
+    Hitable* sphere2 = new Sphere(vec3(-7, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(60, 60, 60), vec3(200, 200, 200), vec3(255, 255, 255)));
+    hitables.push_back(sphere2);
     std::cout << hitables.size() << std::endl;
     
     // pass hitables to world
@@ -106,7 +110,7 @@ int main()
             if (isAntyalia == false)
             {
                 r = cam->getRay(u, v, fov, fov / 45, false);
-                LightIntensity newColor = finalColor.GetColorFromRay(r, world, 0);
+                LightIntensity newColor = finalColor.GetColorFromRay(r, world, cam->origin, 0);
 
                 perspective->SetPixel(i, j, newColor);
             }

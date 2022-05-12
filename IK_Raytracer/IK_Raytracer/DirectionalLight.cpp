@@ -2,14 +2,17 @@
 
 vec3 DirectionalLight::getDiffuse(hitRecord& rec)
 {
-	color *= dot(normalize(rec.normal), normalize(unit_vector(-direction)));
-	return vec3(getRed(), getGreen(), getBlue());
+	diffColor *= dot(normalize(rec.normal), normalize(unit_vector(-direction)));
+	return vec3(getRed(diffColor.r()), getGreen(diffColor.g()), getBlue(diffColor.b()));
 }
 
 vec3 DirectionalLight::getSpecular(hitRecord& rec, vec3 cameraPos)
 {
-	//color *= dot()
-	return vec3(getRed(), getGreen(), getBlue());
+	vec3 viewDir = normalize(cameraPos - rec.p); //raczej git
+	vec3 reflectDir = unit_vector(-direction) - 2 * dot(unit_vector(-direction), rec.normal) * rec.normal;
+	float specular = pow(std::max(dot(viewDir, reflectDir), 0.0f), 16);
+	specColor *= specular;
+	return vec3(getRed(specColor.r()), getGreen(specColor.g()), getBlue(specColor.b()));
 }
 
 bool DirectionalLight::isInShadow(hitRecord& rec)
@@ -19,23 +22,23 @@ bool DirectionalLight::isInShadow(hitRecord& rec)
 	return false;
 }
 
-float DirectionalLight::getRed()
+float DirectionalLight::getRed(float red)
 {
-	if (color.r() >= 1.0f) { return 1.0f; }
-	else if (color.r() <= 0.0f) { return 0.0f; }
-	else { return color.r(); }
+	if (red >= 1.0f) { return 1.0f; }
+	else if (red <= 0.0f) { return 0.0f; }
+	else { return red; }
 }
 
-float DirectionalLight::getGreen()
+float DirectionalLight::getGreen(float green)
 {
-	if (color.g() >= 1.0f) { return 1.0f; }
-	else if (color.g() <= 0.0f) { return 0.0f; }
-	else { return color.g(); }
+	if (green >= 1.0f) { return 1.0f; }
+	else if (green <= 0.0f) { return 0.0f; }
+	else { return green; }
 }
 
-float DirectionalLight::getBlue()
+float DirectionalLight::getBlue(float blue)
 {
-	if (color.b() >= 1.0f) { return 1.0f; }
-	else if (color.b() <= 0.0f) { return 0.0f; }
-	else { return color.b(); }
+	if (blue >= 1.0f) { return 1.0f; }
+	else if (blue <= 0.0f) { return 0.0f; }
+	else { return blue; }
 }

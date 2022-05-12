@@ -110,27 +110,27 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	if (diffuseColors[LEFT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMin, fov, m, ortho);
-		diffuseColors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray,world, 0));
+		diffuseColors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
 	}
 	if (diffuseColors[RIGHT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMin, fov, m, ortho);
-		diffuseColors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
+		diffuseColors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
 	}
 	if (diffuseColors[RIGHT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMax, fov, m, ortho);
-		diffuseColors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
+		diffuseColors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
 	}
 	if (diffuseColors[LEFT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMax, fov, m, ortho);
-		diffuseColors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
+		diffuseColors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
 	}
 	if (diffuseColors[CENTER] == nullptr)
 	{
 		ray = camera->getRay((xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, fov, m, ortho);
-		diffuseColors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world, 0));
+		diffuseColors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
 	}
 
 	if (w < maxSteps || *diffuseColors[LEFT_UPPER] == *diffuseColors[CENTER])
@@ -209,24 +209,25 @@ LightIntensity LightIntensity::operator*(vec3 v)
 //	return Result;
 //}
 
-LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, int bounce)
+LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, int bounce)
 {
 	hitRecord rec;
 	vec3 diffuseColor;
 	vec3 specularColor;
-	DirectionalLight dirLight(vec3(0.2, 0.9, 0.9), vec3(3, -1, -1));
+	DirectionalLight dirLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(30000, -10000, -30000));
 	//DirectionalLight dirLight2(vec3(0.9, 0.9, 0.2), vec3(-3, -1, -1));
 	if (world->hit(r, 0.0, 100, rec))
 	{
+		specularColor = dirLight.getSpecular(rec, -cameraPosition);
 		diffuseColor = dirLight.getDiffuse(rec);
 
-		return LightIntensity(red(rec.materialPtr->mAmbient.r() + rec.materialPtr->mDiffuse.r() * diffuseColor.r()), 
-							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g()), 
-							  blue(rec.materialPtr->mAmbient.b() + rec.materialPtr->mDiffuse.b() * diffuseColor.b()));
+		return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r() * 1), 
+							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g() * 1), 
+							  blue(rec.materialPtr->mAmbient.b()  + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b() * 1));
 	}
 	else
 	{
-		return LightIntensity(dirLight.color.r() * 255.0f, dirLight.color.g() * 255.0f, dirLight.color.b() * 255.0f);
+		return LightIntensity(dirLight.diffColor.r() * 255.0f, dirLight.diffColor.g() * 255.0f, dirLight.diffColor.b() * 255.0f);
 	}
 }
 
