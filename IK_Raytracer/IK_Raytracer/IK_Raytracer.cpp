@@ -14,18 +14,21 @@
 #include "Material.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include <thread>
 
 int main()
 {
+    // Material prefabs
     Material* blackMat = new Material(vec3(6, 6, 6), vec3(20, 20, 20), vec3(255, 255, 255), 32);
     Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(40, 100, 0), 8);
     Material* goldMat = new Material(vec3(20, 20, 0), vec3(255, 255, 0), vec3(255, 255, 255), 64);
     Material* redMat = new Material(vec3(20, 0, 0), vec3(255, 0, 0), vec3(255, 255, 255), 32);
     Material* silverMat = new Material(vec3(10, 10, 10), vec3(100, 100, 100), vec3(255, 255, 255), 32);
     Material* whiteMat = new Material(vec3(30, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 16);
+
     // Screen resolution
-    int scrWidth = 2000;
-    int scrHeight = 1000;
+    int scrWidth = 1000;
+    int scrHeight = 500;
 
     // Image
     Image* perspective = new Image(scrWidth, scrHeight, 3);
@@ -51,10 +54,10 @@ int main()
     std::vector<vec3> vertices, indices;
 
     //// Assigning vertices and indices;
-    parser.ParseFile("cubeBlend.obj", vertices, indices);
+    parser.ParseFile("coneBlend2.obj", vertices, indices);
 
     //// Mesh made from parsed obj file
-    Mesh* cube = new Mesh(vertices, indices, 3, vec3(0, -5, 5) , blackMat); // 1. vertices of object 2. indices of object 3. scale 4. position
+    Mesh* cube = new Mesh(vertices, indices, 1, vec3(3, -5, 0) , redMat); // 1. vertices of object 2. indices of object 3. scale 4. position
     cube->addToWorld(&hitables);
     vertices.clear();
     indices.clear();
@@ -95,10 +98,9 @@ int main()
     //Hitable* plane = new Plane(1, -4, 4, -1, new Material(vec3(0, 0, 0), vec3(0.1, 154, 23), vec3(255, 255, 255), 256));
     //hitables.push_back(plane);
 
-    
     // pass hitables to world
     Hitable* world = new HitableList(hitables);
-
+    int testValue = 0;
     for (int i = 0; i < scrWidth; i++)
     {
         for (int j = 0; j < scrHeight; j++)
@@ -117,14 +119,8 @@ int main()
 
             if (isAntyalia)
                 finalColor = finalColor.Antialiasing(world, cam, fov, fov / 45.0f, false,
-                    uMin, uMax, vMin, vMax, i, j, 0.50f,
-                    std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
-
-
-            float pixelCenterX = u + pixelWidth;
-            float pixelCenterY = v + pixelHeight;
-
-
+                                                     uMin, uMax, vMin, vMax, i, j, 0.50f,
+                                                     std::vector<LightIntensity*>{nullptr, nullptr, nullptr, nullptr, nullptr});
             if (isAntyalia == false)
             {
                 r = cam->getRay(u, v, fov, fov / 45, false);

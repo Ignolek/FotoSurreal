@@ -214,14 +214,24 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	hitRecord rec;
 	std::vector<PointLight> pointLights;
 	std::vector<DirectionalLight> directionalLights;
+	float shadowIntensity = 0.1f; // 0 - black , 1 - no shadow
 
 	//Add lights to calculate
-	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(6, 3, -1), 0.5f, 1.0f, 5.0f, 300.0f));
-	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(-6, 3, -1), 0.5f, 1.0f, 5.0f, 300.0f));
+	//pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 3, -10), 0.5f, 1.0f, 5.0f, 300.0f));
+	//pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 3, 4), 0.5f, 1.0f, 5.0f, 100.0f));
 
 	//directionalLights.push_back(DirectionalLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(-3, -3, -1), 3.0f));
 
-	if (world->hit(r, 0.0, 100, rec))
+	vec3 surLiPos = vec3(0, 2, -4);
+	float surLiIntensity = 5;
+
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+			pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(surLiPos.x() + i * 0.1, surLiPos.y() + j * 0.1, surLiPos.z()), 0.5f, 1.0f, 5.0f, surLiIntensity));
+	}
+
+	if (world->hit(r, 0.0, 10000, rec))
 	{
 		vec3 diffuseColor(0, 0, 0);
 		vec3 specularColor(0, 0, 0);
@@ -229,10 +239,10 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		{
 			hitRecord shadowRec;
 			Ray shadowRay(rec.p, pointLights.at(i).location);
-			if (world->hit(shadowRay, 0.001, 100, shadowRec))
+			if (world->hit(shadowRay, 0.0001, 10000, shadowRec))
 			{
-				specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * 0.1;
-				diffuseColor += pointLights.at(i).getDiffuse(rec) * 0.1;
+				specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
+				diffuseColor += pointLights.at(i).getDiffuse(rec) * shadowIntensity;
 			}
 			else
 			{
@@ -244,10 +254,10 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		{
 			hitRecord shadowRec;
 			Ray shadowRay(rec.p, -directionalLights.at(i).direction);
-			if (world->hit(shadowRay, 0.001, 100, shadowRec))
+			if (world->hit(shadowRay, 0.0001, 100, shadowRec))
 			{
-				specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * 0.1;
-				diffuseColor += directionalLights.at(i).getDiffuse(rec) * 0.1;
+				specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
+				diffuseColor += directionalLights.at(i).getDiffuse(rec) * shadowIntensity;
 			}
 			else
 			{
@@ -255,8 +265,6 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 				diffuseColor += directionalLights.at(i).getDiffuse(rec);
 			}
 		}
-		
-		//if(shadowRay.)
 		
 		return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r()),
 							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g()),
