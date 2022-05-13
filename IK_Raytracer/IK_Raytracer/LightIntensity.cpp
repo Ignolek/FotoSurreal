@@ -216,10 +216,10 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	std::vector<DirectionalLight> directionalLights;
 
 	//Add lights to calculate
-	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 0.1, 0), 0.5f, 1.0f, 5.0f));
-	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(-6, 3, 5), 0.5f, 1.0f, 5.0f));
+	//pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 1, 0), 0.5f, 1.0f, 5.0f));
+	//pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(-6, 3, 5), 0.5f, 1.0f, 5.0f));
 
-	directionalLights.push_back(DirectionalLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(0, -3, -1)));
+	directionalLights.push_back(DirectionalLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(-3, -3, -1)));
 
 	if (world->hit(r, 0.0, 100, rec))
 	{
@@ -227,14 +227,32 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		vec3 specularColor(0, 0, 0);
 		for (int i = 0; i < pointLights.size(); i++)
 		{
-			specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
-			diffuseColor += pointLights.at(i).getDiffuse(rec);
+			Ray shadowRay(rec.p, pointLights.at(i).location);
+			if (world->hit(shadowRay, 0.001, 100, rec))
+			{
+				continue;
+			}
+			else
+			{
+				specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
+				diffuseColor += pointLights.at(i).getDiffuse(rec);
+			}
 		}
 		for (int i = 0; i < directionalLights.size(); i++)
 		{
-			specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
-			diffuseColor += directionalLights.at(i).getDiffuse(rec);
+			Ray shadowRay(rec.p, -directionalLights.at(i).direction);
+			if (world->hit(shadowRay, 0.001, 100, rec))
+			{
+				continue;
+			}
+			else
+			{
+				specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
+				diffuseColor += directionalLights.at(i).getDiffuse(rec);
+			}
 		}
+		
+		//if(shadowRay.)
 		
 		return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r() * 1),
 							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g() * 1),

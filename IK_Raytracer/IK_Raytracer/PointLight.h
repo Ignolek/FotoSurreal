@@ -15,6 +15,6 @@ public:
 	PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten);
 	vec3 getDiffuse(hitRecord& rec);
 	vec3 getSpecular(hitRecord& rec, vec3 cameraPos, float shininess);
-	float calculateDistanceToPointLight(hitRecord& rec);
+	bool isInShadow(hitRecord& rec);
 };
 

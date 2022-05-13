@@ -24,3 +24,8 @@ vec3 PointLight::getSpecular(hitRecord& rec, vec3 cameraPos, float shininess)
 
 	return vec3(getRed(specularColor.r()), getGreen(specularColor.g()), getBlue(specularColor.b()));
 }
+bool PointLight::isInShadow(hitRecord& rec)
+{
+	if (rec.t < 400) return true;
+	else return false;
+}
