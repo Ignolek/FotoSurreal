@@ -216,10 +216,10 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	std::vector<DirectionalLight> directionalLights;
 
 	//Add lights to calculate
-	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 10, -10), 0.5f, 1.0f, 5.0f));
-	//pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 3, 0), 0.5f, 1.0f, 5.0f));
+	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(6, 3, -1), 0.5f, 1.0f, 5.0f, 300.0f));
+	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(-6, 3, -1), 0.5f, 1.0f, 5.0f, 300.0f));
 
-	directionalLights.push_back(DirectionalLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(-3, -3, -1)));
+	//directionalLights.push_back(DirectionalLight(vec3(0.9, 0.9, 0.9), vec3(0.9, 0.9, 0.9), vec3(-3, -3, -1), 3.0f));
 
 	if (world->hit(r, 0.0, 100, rec))
 	{
@@ -258,9 +258,9 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		
 		//if(shadowRay.)
 		
-		return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r() * 1),
-							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g() * 1),
-							  blue(rec.materialPtr->mAmbient.b()  + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b() * 1));
+		return LightIntensity(red(rec.materialPtr->mAmbient.r()   + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r()),
+							  green(rec.materialPtr->mAmbient.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g()),
+							  blue(rec.materialPtr->mAmbient.b()  + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b()));
 	}
 	else
 	{

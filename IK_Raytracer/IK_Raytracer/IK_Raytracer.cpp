@@ -24,14 +24,14 @@ int main()
     Material* silverMat = new Material(vec3(10, 10, 10), vec3(100, 100, 100), vec3(255, 255, 255), 32);
     Material* whiteMat = new Material(vec3(30, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 16);
     // Screen resolution
-    int scrWidth = 500;
-    int scrHeight = 250;
+    int scrWidth = 2000;
+    int scrHeight = 1000;
 
     // Image
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     // Camera and rays settings
-    float fov = 60.0f;
+    float fov = 90.0f;
     Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
