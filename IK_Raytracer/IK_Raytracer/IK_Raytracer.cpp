@@ -27,7 +27,8 @@ int main()
 
     // Camera and rays settings
     float fov = 90.0f;
-    Camera* cam = new Camera(vec3(3, 10, -5), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    vec3 lookAtPoint(0, -1, 0);
+    Camera* cam = new Camera(vec3(3, 10, -5), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
     float pixelHeight = 2.0f / float(scrHeight);
@@ -39,14 +40,28 @@ int main()
     std::cin >> isAntyalia;
 
     // Material prefabs
-    Material* blackMat = new Material(vec3(6, 6, 6), vec3(20, 20, 20), vec3(255, 255, 255), 32);
-    Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(40, 100, 0), 8);
-    Material* goldMat = new Material(vec3(20, 20, 0), vec3(255, 255, 0), vec3(255, 255, 255), 64);
-    Material* redMat = new Material(vec3(20, 0, 0), vec3(255, 0, 0), vec3(255, 255, 255), 32);
-    Material* silverMat = new Material(vec3(10, 10, 10), vec3(100, 100, 100), vec3(255, 255, 255), 32);
-    Material* whiteMat = new Material(vec3(30, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 16);
-    Material* transMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true);
+    std::vector<Material*> materials;
 
+    Material* blackMat = new Material(vec3(6, 6, 6), vec3(20, 20, 20), vec3(255, 255, 255), 32);
+    materials.push_back(blackMat);
+
+    Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(40, 100, 0), 8);
+    materials.push_back(grassMat);
+
+    Material* goldMat = new Material(vec3(20, 20, 0), vec3(255, 255, 0), vec3(255, 255, 255), 64);
+    materials.push_back(goldMat);
+
+    Material* redMat = new Material(vec3(20, 0, 0), vec3(255, 0, 0), vec3(255, 255, 255), 32);
+    materials.push_back(redMat);
+
+    Material* silverMat = new Material(vec3(10, 10, 10), vec3(100, 100, 100), vec3(255, 255, 255), 32);
+    materials.push_back(silverMat);
+
+    Material* whiteMat = new Material(vec3(30, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 16);
+    materials.push_back(whiteMat);
+
+    Material* transMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true);
+    //materials.push_back(transMat);
 
     // Vector of hitable objects
     std::vector<Hitable*> hitables;
@@ -56,7 +71,7 @@ int main()
     std::vector<vec3> vertices, indices;
 
     //// Assigning vertices and indices;
-    parser.ParseFile("coneBlend2.obj", vertices, indices);
+    //parser.ParseFile("coneBlend2.obj", vertices, indices);
 
     //// Mesh made from parsed obj file
 
@@ -88,6 +103,31 @@ int main()
     Hitable* sphere4 = new Sphere(vec3(6, 0, 5), 2, silverMat);
     hitables.push_back(sphere4);
 
+
+    int size = 3;
+    float maxF = 20;
+    float minF = -20;
+    // random spheres generator
+    for (int i = -size; i < size; i++)
+    {
+        for (int j = -size; j < size; j++)
+        {
+            float step = ((float(rand()) / float(RAND_MAX)) *            (maxF - minF)) + minF;
+            float step2 = ((float(rand()) / float(RAND_MAX)) *           (maxF - minF)) + minF;
+            float step3 = ((float(rand()) / float(RAND_MAX)) *           (maxF - minF)) + minF;
+            float randomPosition = ((float(rand()) / float(RAND_MAX)) *  (maxF - minF)) + minF;
+            float randomPosition2 = ((float(rand()) / float(RAND_MAX)) * (maxF - minF)) + minF;
+            float randomPosition3 = ((float(rand()) / float(RAND_MAX)) * (maxF - minF)) + minF;
+
+            float randomRadius = 1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 - 1)));
+            int randomMat = rand() % materials.size();
+            hitables.push_back(new Sphere(vec3((step + randomPosition),
+                                               (step2 + randomPosition2),
+                                               (step3 + randomPosition3)),
+                                                randomRadius, materials.at(randomMat)));
+        }
+    }
+
     std::cout << hitables.size() << std::endl;
 
     //Hitable* plane = new Plane(vec3(0, 5, 0), vec3(5, 0, 0), vec3(0, 5, 0), new Material(vec3(0, 0, 0), vec3(0.1, 154, 23), vec3(255, 255, 255), 256));
@@ -99,9 +139,15 @@ int main()
     std::vector<PointLight> pointLights;
     std::vector<DirectionalLight> directionalLights;
 
-    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 5, 5), 0.5f, 20.0f, 2.0f, 100.0f, &hitables));
-    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 1, 5), 0.5f, 20.0f, 2.0f, 100.0f, &hitables));
-    //directionalLights.push_back(DirectionalLight(vec3(1, 0.8, 0.8), vec3(1, 0.8, 0.8), vec3(-3, -1, -1), 1.0f));
+    //pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 5, 5), 0.5f, 20.0f, 2.0f, 100.0f));
+    //pointLights.push_back(PointLight(vec3(0.3, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 5, -5), 0.5f, 20.0f, 2.0f, 100.0f));
+    //pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 1, 5), 0.5f, 20.0f, 2.0f, 100.0f, &hitables));
+    directionalLights.push_back(DirectionalLight(vec3(1, 0.8, 0.8), vec3(1, 0.8, 0.8), vec3(-3, -1, -1), 1.0f));
+
+    for (int i = 0; i < pointLights.size(); i++)
+    {
+        hitables.push_back(new Sphere(pointLights.at(i).location, 0.2, new Material(pointLights.at(i).diffuseColor * 255, vec3(255, 255, 255), 1, true)));
+    }
     
     // pass hitables to world
     Hitable* world = new HitableList(hitables);

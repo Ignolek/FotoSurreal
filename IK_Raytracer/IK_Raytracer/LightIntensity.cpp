@@ -234,11 +234,11 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			Ray shadowRay(rec.p, unit_vector(pointLights.at(i).location -rec.p));
 
 			// shadow
-			if (world->hit(shadowRay, 0.0001, 10000000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
+			if (world->hit(shadowRay, 0.0001, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
 			{
 
 				ambientColor +=  pointLights.at(i).ambientColor;
-				specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
+				//specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
 				diffuseColor +=  pointLights.at(i).getDiffuse(rec) * shadowIntensity;
 				
 			}
@@ -257,10 +257,10 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			Ray shadowRay(rec.p, -directionalLights.at(i).direction);
 
 			// shadow
-			if (world->hit(shadowRay, 0.0001, 10000000, shadowRec))
+			if (world->hit(shadowRay, 0.0001, 100000, shadowRec))
 			{
 				ambientColor += directionalLights.at(i).ambientColor;
-				specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
+				//specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
 				diffuseColor += directionalLights.at(i).getDiffuse(rec) * shadowIntensity;
 			}
 			// no shadow
