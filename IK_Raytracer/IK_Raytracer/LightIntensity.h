@@ -3,6 +3,8 @@
 #include <vector>
 #include "Hitable.h"
 #include "Camera.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
 
 #define LEFT_UPPER 0
 #define RIGHT_UPPER 1
@@ -48,9 +50,9 @@ public:
 
 	friend LightIntensity operator*(float num, LightIntensity& li);
 
-	LightIntensity Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> colors);
+	LightIntensity Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> colors, std::vector<PointLight> pointLights, std::vector<DirectionalLight> directionalLights);
 
-	LightIntensity GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, int bounce);
+	LightIntensity GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, std::vector<PointLight> pointLights, std::vector<DirectionalLight> directionalLights, int bounce);
 
 	// Methods to ensure that color is in range of [0-255]
 	float red(float redValue);

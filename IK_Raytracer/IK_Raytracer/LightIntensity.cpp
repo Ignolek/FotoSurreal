@@ -1,6 +1,4 @@
 #include "LightIntensity.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
 #include "Ray.h"
 
 void LightIntensity::add(double R, double G, double B)
@@ -101,7 +99,7 @@ bool LightIntensity::operator==(const LightIntensity& li)
 
 
 
-LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> diffuseColors)
+LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> diffuseColors, std::vector<PointLight> pointLights, std::vector<DirectionalLight> directionalLights)
 {
 	maxSteps = 0.125f;
 	LightIntensity result(0.0f, 0.0f, 0.0f);
@@ -110,27 +108,27 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	if (diffuseColors[LEFT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMin, fov, m, ortho);
-		diffuseColors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
+		diffuseColors[LEFT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, pointLights, directionalLights, 0));
 	}
 	if (diffuseColors[RIGHT_UPPER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMin, fov, m, ortho);
-		diffuseColors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
+		diffuseColors[RIGHT_UPPER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, pointLights, directionalLights, 0));
 	}
 	if (diffuseColors[RIGHT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMax, yMax, fov, m, ortho);
-		diffuseColors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
+		diffuseColors[RIGHT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, pointLights, directionalLights, 0));
 	}
 	if (diffuseColors[LEFT_LOWER] == nullptr)
 	{
 		ray = camera->getRay(xMin, yMax, fov, m, ortho);
-		diffuseColors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
+		diffuseColors[LEFT_LOWER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, pointLights, directionalLights, 0));
 	}
 	if (diffuseColors[CENTER] == nullptr)
 	{
 		ray = camera->getRay((xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, fov, m, ortho);
-		diffuseColors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, 0));
+		diffuseColors[CENTER] = new LightIntensity(this->GetColorFromRay(ray, world, camera->origin, pointLights, directionalLights, 0));
 	}
 
 	if (w < maxSteps || *diffuseColors[LEFT_UPPER] == *diffuseColors[CENTER])
@@ -139,7 +137,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else 
 	{
-		result += this->Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[LEFT_UPPER]), nullptr, new LightIntensity(*diffuseColors[CENTER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[LEFT_UPPER]), nullptr, new LightIntensity(*diffuseColors[CENTER]), nullptr, nullptr}, pointLights, directionalLights);
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
@@ -149,7 +147,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else
 	{
-		result += this->Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax , yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[RIGHT_UPPER]), nullptr, new LightIntensity(*diffuseColors[CENTER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax , yMin, (yMin + yMax) * 0.5f, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[RIGHT_UPPER]), nullptr, new LightIntensity(*diffuseColors[CENTER]), nullptr, nullptr}, pointLights, directionalLights);
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
@@ -159,7 +157,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else
 	{
-		result += this->Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[CENTER]), nullptr, new LightIntensity(*diffuseColors[RIGHT_LOWER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, (xMin + xMax) * 0.5f, xMax, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[CENTER]), nullptr, new LightIntensity(*diffuseColors[RIGHT_LOWER]), nullptr, nullptr}, pointLights, directionalLights);
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
@@ -169,7 +167,7 @@ LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, floa
 	}
 	else
 	{
-		result += this->Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[CENTER]), nullptr, new LightIntensity(*diffuseColors[LEFT_LOWER]), nullptr, nullptr});
+		result += this->Antialiasing(world, camera, fov, m, ortho, xMin, (xMin + xMax) * 0.5f, (yMin + yMax) * 0.5f, yMax, x, y, w * 0.5f, std::vector<LightIntensity*>{new LightIntensity(*diffuseColors[CENTER]), nullptr, new LightIntensity(*diffuseColors[LEFT_LOWER]), nullptr, nullptr}, pointLights, directionalLights);
 		//std::cout << result.getRed() << "  " << result.getGreen() << "  " << result.getBlue() << std::endl;
 	}
 
@@ -209,18 +207,10 @@ LightIntensity LightIntensity::operator*(vec3 v)
 //	return Result;
 //}
 
-LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, int bounce)
+LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, std::vector<PointLight> pointLights, std::vector<DirectionalLight> directionalLights, int bounce)
 {
 	hitRecord rec;
-	std::vector<PointLight> pointLights;
-	std::vector<DirectionalLight> directionalLights;
 	float shadowIntensity = 0.35f; // 0 - black , 1 - no shadow
-
-	//Add lights to calculate
-	pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 5, 5), 0.5f, 1.0f, 5.0f, 100.0f));
-	//pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 5, 5), 0.5f, 0.6f, 1.0f, 10.0f));
-
-	//directionalLights.push_back(DirectionalLight(vec3(1, 0.8, 0.8), vec3(1, 0.8, 0.8), vec3(-3, -1, -1), 1.0f));
 
 	vec3 surLiPos = vec3(0, 2, -4);
 	float surLiIntensity = 5;
@@ -242,7 +232,9 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		{
 			hitRecord shadowRec;
 			Ray shadowRay(rec.p, unit_vector(pointLights.at(i).location -rec.p));
-			if (world->hit(shadowRay, 0.0001, 10000000, shadowRec))
+
+			// shadow
+			if (world->hit(shadowRay, 0.0001, 10000000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
 			{
 
 				ambientColor +=  pointLights.at(i).ambientColor;
@@ -250,6 +242,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 				diffuseColor +=  pointLights.at(i).getDiffuse(rec) * shadowIntensity;
 				
 			}
+			// no shadow
 			else
 			{
 				ambientColor += pointLights.at(i).ambientColor;
@@ -262,12 +255,15 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		{
 			hitRecord shadowRec;
 			Ray shadowRay(rec.p, -directionalLights.at(i).direction);
+
+			// shadow
 			if (world->hit(shadowRay, 0.0001, 10000000, shadowRec))
 			{
 				ambientColor += directionalLights.at(i).ambientColor;
 				specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
 				diffuseColor += directionalLights.at(i).getDiffuse(rec) * shadowIntensity;
 			}
+			// no shadow
 			else
 			{
 				ambientColor += directionalLights.at(i).ambientColor;

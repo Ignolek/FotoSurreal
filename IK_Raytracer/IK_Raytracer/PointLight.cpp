@@ -1,7 +1,10 @@
 #include "PointLight.h"
 
-PointLight::PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten, float intense) : 
-			ambientColor(diffColor * 2.5), diffuseColor(diffColor), specularColor(specColor), location(loc), attenuation(atten), linearAttenuation(linearAtten), quatAttenuation(quatAtten), intensity(intense){}
+PointLight::PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten, float intense, std::vector<Hitable*>* hitables) :
+			ambientColor(diffColor * 2.5), diffuseColor(diffColor), specularColor(specColor), location(loc), attenuation(atten), linearAttenuation(linearAtten), quatAttenuation(quatAtten), intensity(intense)
+{
+	hitables->push_back(new Sphere(loc, 0.3, new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true)));
+}
 
 vec3 PointLight::getDiffuse(hitRecord& rec)
 {

@@ -1,5 +1,7 @@
 #pragma once
 #include "Light.h"
+#include "Sphere.h"
+#include <vector>
 
 class PointLight : public Light
 {
@@ -14,7 +16,7 @@ public:
 	float linearAttenuation;
 	float quatAttenuation;
 
-	PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten, float intense);
+	PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten, float intense, std::vector<Hitable*>* hitables);
 	vec3 getDiffuse(hitRecord& rec);
 	vec3 getSpecular(hitRecord& rec, vec3 cameraPos, float shininess);
 };
