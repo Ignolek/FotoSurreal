@@ -14,9 +14,3 @@ vec3 DirectionalLight::getSpecular(hitRecord& rec, vec3 cameraPos, float shinine
 	specColor *= specular;
 	return vec3(getRed(specColor.r()), getGreen(specColor.g()), getBlue(specColor.b())) * intensity;
 }
-
-bool DirectionalLight::isInShadow(hitRecord& rec)
-{
-	if (rec.t < 400) return true;
-	else return false;
-}

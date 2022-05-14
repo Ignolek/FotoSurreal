@@ -1,7 +1,7 @@
 #include "PointLight.h"
 
 PointLight::PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten, float intense) : 
-			diffuseColor(diffColor), specularColor(specColor), location(loc), attenuation(atten), linearAttenuation(linearAtten), quatAttenuation(quatAtten), intensity(intense){}
+			ambientColor(diffColor * 2.5), diffuseColor(diffColor), specularColor(specColor), location(loc), attenuation(atten), linearAttenuation(linearAtten), quatAttenuation(quatAtten), intensity(intense){}
 
 vec3 PointLight::getDiffuse(hitRecord& rec)
 {
@@ -23,9 +23,4 @@ vec3 PointLight::getSpecular(hitRecord& rec, vec3 cameraPos, float shininess)
 	specularColor *= specular;
 
 	return vec3(getRed(specularColor.r()), getGreen(specularColor.g()), getBlue(specularColor.b())) * intensity/100;
-}
-bool PointLight::isInShadow(hitRecord& rec)
-{
-	if (rec.t < 400) return true;
-	else return false;
 }

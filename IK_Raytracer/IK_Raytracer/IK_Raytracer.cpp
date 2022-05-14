@@ -35,7 +35,7 @@ int main()
 
     // Camera and rays settings
     float fov = 90.0f;
-    Camera* cam = new Camera(vec3(0, 0, 10), vec3(0, 0, -1000), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    Camera* cam = new Camera(vec3(3, 10, -5), vec3(0, 0, -1), vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
     float pixelHeight = 2.0f / float(scrHeight);
@@ -57,10 +57,6 @@ int main()
     parser.ParseFile("coneBlend2.obj", vertices, indices);
 
     //// Mesh made from parsed obj file
-    Mesh* cube = new Mesh(vertices, indices, 1, vec3(3, -5, 0) , redMat); // 1. vertices of object 2. indices of object 3. scale 4. position
-    cube->addToWorld(&hitables);
-    vertices.clear();
-    indices.clear();
 
     //// Second object creation:
     //parser.ParseFile("cone.obj", vertices, indices);
@@ -86,10 +82,10 @@ int main()
     Hitable* sphere2 = new Sphere(vec3(-4, 0, -1), 2, vec3(0, 154, 23), redMat);
     hitables.push_back(sphere2);
 
-    Hitable* sphere3 = new Sphere(vec3(-6, 0, 2), 2, vec3(0, 154, 23), whiteMat);
+    Hitable* sphere3 = new Sphere(vec3(-6, 0, 5), 2, vec3(0, 154, 23), whiteMat);
     hitables.push_back(sphere3);
 
-    Hitable* sphere4 = new Sphere(vec3(6, 0, 2), 2, vec3(0, 154, 23), silverMat);
+    Hitable* sphere4 = new Sphere(vec3(6, 0, 5), 2, vec3(0, 154, 23), silverMat);
     hitables.push_back(sphere4);
 
     std::cout << hitables.size() << std::endl;

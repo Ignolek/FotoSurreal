@@ -4,6 +4,7 @@
 class PointLight : public Light
 {
 public:
+	vec3 ambientColor;
 	vec3 diffuseColor;
 	vec3 specularColor;
 	float intensity;
@@ -16,6 +17,5 @@ public:
 	PointLight(vec3 diffColor, vec3 specColor, vec3 loc, float atten, float linearAtten, float quatAtten, float intense);
 	vec3 getDiffuse(hitRecord& rec);
 	vec3 getSpecular(hitRecord& rec, vec3 cameraPos, float shininess);
-	bool isInShadow(hitRecord& rec);
 };
 
