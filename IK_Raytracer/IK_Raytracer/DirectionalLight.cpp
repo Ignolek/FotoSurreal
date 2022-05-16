@@ -3,7 +3,7 @@
 vec3 DirectionalLight::getDiffuse(hitRecord& rec)
 {
 	diffColor *= dot(normalize(rec.normal), normalize(unit_vector(-direction)));
-	return vec3(getRed(diffColor.r()), getGreen(diffColor.g()), getBlue(diffColor.b())) * intensity;
+	return vec3(getRed(diffColor.r()), getGreen(diffColor.g()), getBlue(diffColor.b())) * intensity * (((float(rand()) / float(RAND_MAX)) * (1 - rec.materialPtr->fuzz)) + rec.materialPtr->fuzz);
 }
 
 vec3 DirectionalLight::getSpecular(hitRecord& rec, vec3 cameraPos, float shininess)
@@ -12,5 +12,5 @@ vec3 DirectionalLight::getSpecular(hitRecord& rec, vec3 cameraPos, float shinine
 	vec3 reflectDir = unit_vector(-direction) - 2 * dot(unit_vector(-direction), rec.normal) * rec.normal;
 	float specular = pow(std::max(dot(viewDir, reflectDir), 0.0f), shininess);
 	specColor *= specular;
-	return vec3(getRed(specColor.r()), getGreen(specColor.g()), getBlue(specColor.b())) * intensity;
+	return vec3(getRed(specColor.r()), getGreen(specColor.g()), getBlue(specColor.b())) * intensity * (((float(rand()) / float(RAND_MAX)) * (1 - rec.materialPtr->fuzz)) + rec.materialPtr->fuzz);
 }

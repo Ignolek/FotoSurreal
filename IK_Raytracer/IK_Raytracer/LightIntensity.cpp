@@ -210,7 +210,7 @@ LightIntensity LightIntensity::operator*(vec3 v)
 LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, std::vector<PointLight> pointLights, std::vector<DirectionalLight> directionalLights, int bounce)
 {
 	hitRecord rec;
-	float shadowIntensity = 0.35f; // 0 - black , 1 - no shadow
+	float shadowIntensity = 0.1f; // 0 - black , 1 - no shadow
 
 	vec3 surLiPos = vec3(0, 2, -4);
 	float surLiIntensity = 5;
@@ -222,7 +222,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	//		pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(surLiPos.x() + i * lightSourceStep, surLiPos.y() + j * lightSourceStep, surLiPos.z()), 0.5f, 1.0f, 5.0f, surLiIntensity));
 	//}
 
-	if (world->hit(r, 0.0001, 10000, rec))
+	if (world->hit(r, 0.01, 10000, rec))
 	{
 		vec3 ambientColor (0, 0, 0);
 		vec3 diffuseColor (0, 0, 0);
@@ -234,7 +234,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			Ray shadowRay(rec.p, unit_vector(pointLights.at(i).location -rec.p));
 
 			// shadow
-			if (world->hit(shadowRay, 0.0001, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
+			if (world->hit(shadowRay, 0.01, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
 			{
 
 				ambientColor +=  pointLights.at(i).ambientColor;
@@ -257,7 +257,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			Ray shadowRay(rec.p, -directionalLights.at(i).direction);
 
 			// shadow
-			if (world->hit(shadowRay, 0.0001, 100000, shadowRec))
+			if (world->hit(shadowRay, 0.01, 100000, shadowRec))
 			{
 				ambientColor += directionalLights.at(i).ambientColor;
 				//specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
@@ -279,7 +279,8 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	}
 	else
 	{
-		return LightIntensity(0, 50, 200);
+		//return LightIntensity(0, 50, 200);
+		return LightIntensity(0, 0, 0);
 	}
 }
 

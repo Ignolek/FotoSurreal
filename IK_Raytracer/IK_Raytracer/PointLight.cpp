@@ -15,15 +15,15 @@ vec3 PointLight::getDiffuse(hitRecord& rec)
 	diffuseColor *= dot(normalize(rec.normal), normalize(unit_vector(lightDir)));
 	diffuseColor /= finalAttenuation;
 	
-	return vec3(getRed(diffuseColor.r()), getGreen(diffuseColor.g()), getBlue(diffuseColor.b())) * intensity;
+	return vec3(getRed(diffuseColor.r()), getGreen(diffuseColor.g()), getBlue(diffuseColor.b())) * intensity * (((float(rand()) / float(RAND_MAX)) * (1 - rec.materialPtr->fuzz)) + rec.materialPtr->fuzz);
 }
 vec3 PointLight::getSpecular(hitRecord& rec, vec3 cameraPos, float shininess)
 {
 	vec3 lightDir = normalize(location - rec.p);
 	vec3 viewDir = normalize(cameraPos + rec.p);
-	vec3 reflectDir = unit_vector(lightDir) - 2 * dot(unit_vector(lightDir), -rec.normal) * -rec.normal;
+	vec3 reflectDir = (unit_vector(lightDir) - 2 * dot(unit_vector(lightDir), -rec.normal) * -rec.normal);
 	float specular = pow(std::max(dot(viewDir, reflectDir), 0.0f), shininess);
 	specularColor *= specular;
 
-	return vec3(getRed(specularColor.r()), getGreen(specularColor.g()), getBlue(specularColor.b())) * intensity/100;
+	return vec3(getRed(specularColor.r()), getGreen(specularColor.g()), getBlue(specularColor.b())) * intensity/100 * (((float(rand()) / float(RAND_MAX)) * (1 - rec.materialPtr->fuzz)) + rec.materialPtr->fuzz);
 }

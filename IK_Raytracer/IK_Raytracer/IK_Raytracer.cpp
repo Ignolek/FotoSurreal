@@ -63,6 +63,12 @@ int main()
     Material* transMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true);
     //materials.push_back(transMat);
 
+    Material* fuzzMat = new Material(vec3(0, 0, 255), vec3(255, 255, 255), 32, 0.4f);
+    materials.push_back(fuzzMat);
+    
+    Material* redFuzzMat = new Material(vec3(255, 50, 150), vec3(255, 255, 255), 16, 0.7f);
+    materials.push_back(redFuzzMat);
+
     // Vector of hitable objects
     std::vector<Hitable*> hitables;
 
@@ -104,9 +110,10 @@ int main()
     hitables.push_back(sphere4);
 
 
-    int size = 3;
-    float maxF = 20;
-    float minF = -20;
+    int size = 2;
+    float maxF = 10;
+    float minF = -10;
+
     // random spheres generator
     for (int i = -size; i < size; i++)
     {
@@ -119,10 +126,12 @@ int main()
             float randomPosition2 = ((float(rand()) / float(RAND_MAX)) * (maxF - minF)) + minF;
             float randomPosition3 = ((float(rand()) / float(RAND_MAX)) * (maxF - minF)) + minF;
 
+            float calculateYPos = step2 + randomPosition2;
+            if (calculateYPos < 0.0f) calculateYPos = 0.0f;
             float randomRadius = 1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 - 1)));
             int randomMat = rand() % materials.size();
             hitables.push_back(new Sphere(vec3((step + randomPosition),
-                                               (step2 + randomPosition2),
+                                               (calculateYPos),
                                                (step3 + randomPosition3)),
                                                 randomRadius, materials.at(randomMat)));
         }
@@ -139,14 +148,15 @@ int main()
     std::vector<PointLight> pointLights;
     std::vector<DirectionalLight> directionalLights;
 
-    //pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 5, 5), 0.5f, 20.0f, 2.0f, 100.0f));
-    //pointLights.push_back(PointLight(vec3(0.3, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 5, -5), 0.5f, 20.0f, 2.0f, 100.0f));
+    pointLights.push_back(PointLight(vec3(1.0, 0.8, 0.2), vec3(1.0, 0.8, 0.2), vec3(0, 5, 5), 0.5f, 20.0f, 2.0f, 200.0f));
+    pointLights.push_back(PointLight(vec3(0.3, 1.0, 1.0), vec3(0.3, 1.0, 1.0), vec3(0, 5, -5), 0.5f, 20.0f, 2.0f, 300.0f));
     //pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 1, 5), 0.5f, 20.0f, 2.0f, 100.0f, &hitables));
-    directionalLights.push_back(DirectionalLight(vec3(1, 0.8, 0.8), vec3(1, 0.8, 0.8), vec3(-3, -1, -1), 1.0f));
+    //directionalLights.push_back(DirectionalLight(vec3(1, 0.8, 0.8), vec3(1, 0.8, 0.8), vec3(-3, -1, -1), 1.0f));
 
+    // PointLights gizmos
     for (int i = 0; i < pointLights.size(); i++)
     {
-        hitables.push_back(new Sphere(pointLights.at(i).location, 0.2, new Material(pointLights.at(i).diffuseColor * 255, vec3(255, 255, 255), 1, true)));
+        hitables.push_back(new Sphere(pointLights.at(i).location, 0.2, new Material(pointLights.at(i).diffuseColor * 1020, vec3(255, 255, 255), 1, true)));
     }
     
     // pass hitables to world
