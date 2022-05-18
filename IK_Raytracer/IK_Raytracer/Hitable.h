@@ -9,9 +9,7 @@ struct hitRecord
 	float t;
 	vec3 p;
 	vec3 normal;
-	//vec3 hitColor;
 	Material* materialPtr;
-	bool hit;
 };
 
 class Hitable 

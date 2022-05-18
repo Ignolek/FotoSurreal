@@ -37,7 +37,6 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 			rec.normal = (rec.p - center) / radius;
 			//rec.hitColor = color;
 			rec.materialPtr = sphereMaterial;
-			rec.hit = true;
 
 			return true;
 		}
@@ -49,13 +48,11 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 			rec.normal = (rec.p - center) / radius;
 			//rec.hitColor = color;
 			rec.materialPtr = sphereMaterial;
-			rec.hit = true;
 			
 			return true;
 		}
 	}
 
-	rec.hit = false;
 	return false;
 }
 
