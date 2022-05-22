@@ -105,7 +105,7 @@ int main()
     hitables.push_back(ground);
 
     
-    Hitable* sphere = new Sphere(vec3(0, 1, 2), 5, earthMat);
+    Hitable* sphere = new Sphere(vec3(0, 1, 2), 3, earthMat);
     hitables.push_back(sphere);
     
     /*Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(30, 30, 30), vec3(255, 255, 255), 128));
@@ -216,7 +216,7 @@ int main()
                 perspective->SetPixel(i, j, finalColor);
         }
 
-        std::cout << "Please wait, " << (i * 100) / scrWidth << "% of image has been calculated." << std::endl;
+        //std::cout << "Please wait, " << (i * 100) / scrWidth << "% of image has been calculated." << std::endl;
     }
     
 

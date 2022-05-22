@@ -267,10 +267,21 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		{
 			//std::cout << "TEXTURE" << std::endl;
 			//std::cout << rec.u << rec.v << std::endl;
-			return LightIntensity(red(rec.materialPtr->mAmbient.r()	 * ambientColor.r() + rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r()  + rec.materialPtr->mSpecular.r() * specularColor.r()),
-								  green(rec.materialPtr->mAmbient.g()* ambientColor.g() + rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g()  + rec.materialPtr->mSpecular.g() * specularColor.g()),
-								  blue(rec.materialPtr->mAmbient.b() * ambientColor.b() + rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b()  + rec.materialPtr->mSpecular.b() * specularColor.b()));
+			float redTexAmbientValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * 0.1 * ambientColor.r();
+			float greenTexAmbientValue =rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * 0.1 * ambientColor.g();
+			float blueTexAmbientValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * 0.1 * ambientColor.b();
+			
+			float redTexDiffuseValue =   rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * 3 * diffuseColor.r();
+			float greenTexDiffuseValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * 3 * diffuseColor.g();
+			float blueTexDiffuseValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * 3 * diffuseColor.b();
+			
+			float redTexSpecularValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * specularColor.r();
+			float greenTexSpecularValue =rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * specularColor.g();
+			float blueTexSpecularValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * specularColor.b();
 
+			return LightIntensity(red(redTexAmbientValue + redTexDiffuseValue + redTexSpecularValue),
+								  green(greenTexAmbientValue + greenTexDiffuseValue + greenTexSpecularValue),
+								  blue(blueTexAmbientValue + blueTexDiffuseValue + blueTexSpecularValue));
 		}
 		else
 		{
