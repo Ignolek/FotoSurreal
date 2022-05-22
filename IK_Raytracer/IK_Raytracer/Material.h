@@ -1,6 +1,7 @@
 #pragma once
 #include "vec3.h"
 #include "Ray.h"
+#include "ImageTexture.h"
 class Material
 {
 public:
@@ -11,9 +12,11 @@ public:
 	float fuzz = 1.0f;
 	bool isTransparent = false;
 	bool isMirror = false;
+	ImageTexture* texture = nullptr;
 
 	Material();
 	Material(vec3 diffuse, vec3 specular, float shine);
+	Material(ImageTexture* tex, vec3 specular, float shine);
 	Material(vec3 diffuse, vec3 specular, float shine, float fuzziness);
 	Material(vec3 diffuse, vec3 specular, float shine, float fuzziness, bool isMirr);
 	Material(vec3 diffuse, vec3 specular, float shine, bool isTrans);

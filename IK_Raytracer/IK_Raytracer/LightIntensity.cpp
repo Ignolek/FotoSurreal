@@ -263,9 +263,23 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		}
 		
 		// Final color
-		return LightIntensity(red(rec.materialPtr->mAmbient.r()  * ambientColor.r() + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r()),
-							  green(rec.materialPtr->mAmbient.g()* ambientColor.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g()),
-							  blue(rec.materialPtr->mAmbient.b() * ambientColor.b() + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b()));
+		if (rec.materialPtr->texture != nullptr)
+		{
+			//std::cout << "TEXTURE" << std::endl;
+			//std::cout << rec.u << rec.v << std::endl;
+			return LightIntensity(red(rec.materialPtr->mAmbient.r()	 * ambientColor.r() + rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r()  + rec.materialPtr->mSpecular.r() * specularColor.r()),
+								  green(rec.materialPtr->mAmbient.g()* ambientColor.g() + rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g()  + rec.materialPtr->mSpecular.g() * specularColor.g()),
+								  blue(rec.materialPtr->mAmbient.b() * ambientColor.b() + rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b()  + rec.materialPtr->mSpecular.b() * specularColor.b()));
+
+		}
+		else
+		{
+			//std::cout << "TEXTURE" << std::endl;
+			return LightIntensity(red(rec.materialPtr->mAmbient.r()  * ambientColor.r() + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r()),
+								  green(rec.materialPtr->mAmbient.g()* ambientColor.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g()),
+								  blue(rec.materialPtr->mAmbient.b() * ambientColor.b() + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b()));
+		}
+
 		
 	}
 	else

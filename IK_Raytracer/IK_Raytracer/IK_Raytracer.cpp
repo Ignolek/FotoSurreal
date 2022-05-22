@@ -14,7 +14,10 @@
 #include "Material.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
-#include <thread>
+#include "ImageTexture.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "Libraries/stb_image.h"
 
 int main()
 {
@@ -40,8 +43,15 @@ int main()
     std::cout << "Do you want to turn on antyaliasing [0 -- no, 1 -- yes]?: ";
     std::cin >> isAntyalia;
 
+    // Load textures
+    int nX, nY, nN;
+    unsigned char* earthTexData = stbi_load("earth.jpg", &nX, &nY, &nN, 0);
+
+
     // Material prefabs
     std::vector<Material*> materials;
+
+    Material* earthMat = new Material(new ImageTexture(earthTexData, nX, nY), vec3(255, 255, 255), 32);
 
     Material* blackMat = new Material(vec3(6, 6, 6), vec3(20, 20, 20), vec3(255, 255, 255), 32);
     materials.push_back(blackMat);
@@ -95,7 +105,7 @@ int main()
     hitables.push_back(ground);
 
     
-    Hitable* sphere = new Sphere(vec3(0, 1, -1), 2, goldMat);
+    Hitable* sphere = new Sphere(vec3(0, 1, 2), 5, earthMat);
     hitables.push_back(sphere);
     
     /*Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(30, 30, 30), vec3(255, 255, 255), 128));

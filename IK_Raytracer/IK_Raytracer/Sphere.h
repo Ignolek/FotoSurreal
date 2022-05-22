@@ -17,6 +17,7 @@ public:
 
 	//vec3* intersect(Ray& a_Ray);
 	bool hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const;
+	void getSphereUV(const vec3& p, float& u, float& v) const;
 };
 
 bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
@@ -26,6 +27,7 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 	float b = dot(oc, r.direction());
 	float c = dot(oc, oc) - radius * radius;
 	float discriminant = b * b - a * c;
+
 
 	if (discriminant > 0)
 	{
@@ -38,6 +40,7 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 			//rec.hitColor = color;
 			rec.materialPtr = sphereMaterial;
 
+			getSphereUV((rec.p - center) / radius, rec.u, rec.v);
 			return true;
 		}
 		temp = (-b + sqrt(b * b - a * c)) / a;
@@ -49,10 +52,19 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 			//rec.hitColor = color;
 			rec.materialPtr = sphereMaterial;
 			
+			getSphereUV((rec.p - center) / radius, rec.u, rec.v);
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void Sphere::getSphereUV(const vec3& p, float& u, float& v) const
+{
+	float phi = atan2(p.z(), p.x());
+	float theta = asin(p.y());
+	u = 1 - (phi + 3.1415) / (2 * 3.1415);
+	v = (theta + 3.1415 / 2) / 3.1415;
 }
 

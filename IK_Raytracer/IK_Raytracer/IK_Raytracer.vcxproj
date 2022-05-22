@@ -142,6 +142,7 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="IK_Raytracer.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="ImageTexture.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightIntensity.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Hitable.h" />
     <ClInclude Include="HitableList.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="ImageTexture.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightIntensity.h" />
     <ClInclude Include="Material.h" />
