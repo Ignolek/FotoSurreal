@@ -32,7 +32,7 @@ int main()
     float fov = 90.0f;
     vec3 lookAtPoint(0, -1, 0);
     //Camera* cam = new Camera(vec3(3, 10, -5), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
-    Camera* cam = new Camera(vec3(0, 1, -8), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    Camera* cam = new Camera(vec3(-10, 10, -2), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
     float pixelHeight = 2.0f / float(scrHeight);
@@ -45,7 +45,7 @@ int main()
 
     // Load textures
     int nX, nY, nN;
-    unsigned char* earthTexData = stbi_load("earth.jpg", &nX, &nY, &nN, 0);
+    unsigned char* earthTexData = stbi_load("brick.jpg", &nX, &nY, &nN, 0);
 
 
     // Material prefabs
@@ -105,9 +105,11 @@ int main()
     hitables.push_back(ground);
 
     
-    Hitable* sphere = new Sphere(vec3(0, 1, 2), 3, earthMat);
+    Hitable* sphere = new Sphere(vec3(5, 1, 2), 3, earthMat);
     hitables.push_back(sphere);
     
+    Hitable* sphereRect = new Sphere(vec3(-5, 1, 2), 3, earthMat, 1);
+    hitables.push_back(sphereRect);
     /*Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(30, 30, 30), vec3(255, 255, 255), 128));
     hitables.push_back(sphere1);*/
     

@@ -10,10 +10,12 @@ private:
 	vec3 center;
 	float radius;
 	Material* sphereMaterial;
+	bool isTexRect = false;
 
 public:
 	Sphere() : center(0, 0, 0), radius(0.1f){};
 	Sphere(vec3 cen, float r, Material* sphereMat) : center(cen), radius(r), sphereMaterial(sphereMat) {};
+	Sphere(vec3 cen, float r, Material* sphereMat, bool texRect) : center(cen), radius(r), sphereMaterial(sphereMat), isTexRect(texRect) {};
 
 	//vec3* intersect(Ray& a_Ray);
 	bool hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const;
@@ -62,9 +64,17 @@ bool Sphere::hit(const Ray& r, float tMin, float tMax, hitRecord& rec) const
 
 void Sphere::getSphereUV(const vec3& p, float& u, float& v) const
 {
-	float phi = atan2(p.z(), p.x());
-	float theta = asin(p.y());
-	u = 1 - (phi + 3.1415) / (2 * 3.1415);
-	v = (theta + 3.1415 / 2) / 3.1415;
+	if (isTexRect)
+	{
+		u = (p.x() + 1) / 2;
+		v = (p.y() + 1) / 2;
+	}
+	else
+	{
+		float phi = atan2(p.z(), p.x());
+		float theta = asin(p.y());
+		u = 1 - (phi + 3.1415) / (2 * 3.1415);
+		v = (theta + 3.1415 / 2) / 3.1415;
+	}
 }
 
