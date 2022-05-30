@@ -66,7 +66,7 @@ void Sphere::getSphereUV(const vec3& p, float& u, float& v) const
 {
 	if (isTexRect)
 	{
-		u = (p.x() + 1) / 2;
+		u = (p.z() + 1) / 2;
 		v = (p.y() + 1) / 2;
 	}
 	else

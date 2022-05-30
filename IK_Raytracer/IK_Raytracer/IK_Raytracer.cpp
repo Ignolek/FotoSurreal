@@ -161,7 +161,7 @@ int main()
     std::vector<PointLight> pointLights;
     std::vector<DirectionalLight> directionalLights;
 
-    pointLights.push_back(PointLight(vec3(0.1, 0.1, 1.0), vec3(0.1, 0.1, 1.0), vec3(-10, 5, -1), 0.5f, 20.0f, 5.0f, 200.0f));
+    //pointLights.push_back(PointLight(vec3(0.1, 0.1, 1.0), vec3(0.1, 0.1, 1.0), vec3(-10, 5, -1), 0.5f, 20.0f, 5.0f, 200.0f));
     pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(10, 5, -1), 0.5f, 20.0f, 5.0f, 200.0f));
 
     vec3 surLiPos = vec3(0, 1, 5);
