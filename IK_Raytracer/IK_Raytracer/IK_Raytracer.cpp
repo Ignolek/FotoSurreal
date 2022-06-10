@@ -32,7 +32,7 @@ int main()
     float fov = 90.0f;
     vec3 lookAtPoint(0, -1, 0);
     //Camera* cam = new Camera(vec3(3, 10, -5), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
-    Camera* cam = new Camera(vec3(-10, 10, -2), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
+    Camera* cam = new Camera(vec3(0, 2, -10), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
     float pixelWidth = 2.0f / float(scrWidth);
     float pixelHeight = 2.0f / float(scrHeight);
@@ -54,7 +54,7 @@ int main()
     Material* earthMat = new Material(new ImageTexture(earthTexData, nX, nY), vec3(255, 255, 255), 32);
 
     Material* blackMat = new Material(vec3(6, 6, 6), vec3(20, 20, 20), vec3(255, 255, 255), 32);
-    materials.push_back(blackMat);
+    //materials.push_back(blackMat);
 
     Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(0, 0, 0), 8);
     materials.push_back(grassMat);
@@ -62,8 +62,8 @@ int main()
     Material* goldMat = new Material(vec3(20, 0, 0), vec3(255, 0, 0), vec3(50, 50, 50), 8);
     materials.push_back(goldMat);
 
-    Material* redMat = new Material(vec3(255, 0, 0), vec3(255, 255, 255), 8, 0.3f, true);
-    materials.push_back(redMat);
+    Material* redMat = new Material(vec3(255, 0, 0), vec3(255, 255, 255), 8, 1.0f, true);
+    //materials.push_back(redMat);
 
     Material* silverMat = new Material(vec3(10, 10, 10), vec3(100, 100, 100), vec3(255, 255, 255), 32);
     materials.push_back(silverMat);
@@ -79,6 +79,12 @@ int main()
     
     Material* redFuzzMat = new Material(vec3(255, 50, 150), vec3(255, 255, 255), 16, 0.7f);
     //materials.push_back(redFuzzMat);
+
+    Material* refractMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, true, 1.3);
+    //materials.push_back(refractMat);
+
+    Material* mirrorMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, 1.0, true);
+    //materials.push_back(mirrorMat);
 
     // Vector of hitable objects
     std::vector<Hitable*> hitables;
@@ -104,11 +110,13 @@ int main()
     Hitable* ground = new Sphere(vec3(0, -101, -1), 100.0, grassMat);
     hitables.push_back(ground);
 
-    
-    Hitable* sphere = new Sphere(vec3(5, 1, 2), 3, earthMat);
+    Hitable* sphere = new Sphere(vec3(-20, 1, 80), 3, earthMat);
     hitables.push_back(sphere);
+
+    Hitable* sphereMirror = new Sphere(vec3(5, 1, 2), 3, mirrorMat);
+    hitables.push_back(sphereMirror);
     
-    Hitable* sphereRect = new Sphere(vec3(-5, 1, 2), 3, earthMat, 1);
+    Hitable* sphereRect = new Sphere(vec3(-5, 1, 2), -3, refractMat);
     hitables.push_back(sphereRect);
     /*Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(30, 30, 30), vec3(255, 255, 255), 128));
     hitables.push_back(sphere1);*/
@@ -162,7 +170,7 @@ int main()
     std::vector<DirectionalLight> directionalLights;
 
     //pointLights.push_back(PointLight(vec3(0.1, 0.1, 1.0), vec3(0.1, 0.1, 1.0), vec3(-10, 5, -1), 0.5f, 20.0f, 5.0f, 200.0f));
-    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(10, 5, -1), 0.5f, 20.0f, 5.0f, 200.0f));
+    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(10, 5, -1), 0.5f, 20.0f, 8.0f, 200.0f));
 
     vec3 surLiPos = vec3(0, 1, 5);
     int surLiSize = 2;
@@ -218,7 +226,7 @@ int main()
                 perspective->SetPixel(i, j, finalColor);
         }
 
-        //std::cout << "Please wait, " << (i * 100) / scrWidth << "% of image has been calculated." << std::endl;
+        std::cout << "Please wait, " << (i * 100) / scrWidth << "% of image has been calculated." << std::endl;
     }
     
 

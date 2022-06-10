@@ -212,91 +212,121 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	hitRecord rec;
 	float shadowIntensity = 0.0f; // 0 - black , 1 - no shadow
 
-	if (world->hit(r, 0.01, 10000, rec))
+	if (world->hit(r, 0.001, 10000, rec))
 	{
 		vec3 ambientColor (0, 0, 0);
 		vec3 diffuseColor (0, 0, 0);
 		vec3 specularColor(0, 0, 0);
 
-		for (int i = 0; i < pointLights.size(); i++)
+		if (rec.materialPtr->isMirror && bounce < 2)
 		{
-			hitRecord shadowRec;
-			Ray shadowRay(rec.p, unit_vector(pointLights.at(i).location -rec.p));
+			vec3 scatterDir = (unit_vector(r.direction()) - 2 * dot(unit_vector(r.direction()), -rec.normal) * -rec.normal);
+			Ray scatterRay(rec.p, (scatterDir));
 
-			// shadow
-			if (world->hit(shadowRay, 0.01, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
+			return GetColorFromRay(scatterRay, world, cameraPosition, pointLights, directionalLights, bounce++);
+		}
+
+		else if (rec.materialPtr->isRefractor && bounce < 2)
+		{
+			vec3 refractedDir;
+			vec3 uv = unit_vector(r.direction());
+			float dt = dot(uv, -rec.normal);
+			float discriminant = 1.0 - rec.materialPtr->refraction * rec.materialPtr->refraction * (1 - dt * dt);
+			if (discriminant > 0)
 			{
-
-				ambientColor +=  pointLights.at(i).ambientColor;
-				//specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
-				diffuseColor += pointLights.at(i).getDiffuse(rec) * shadowIntensity;
-			
+				refractedDir = rec.materialPtr->refraction * (uv - rec.normal * dt) - rec.normal * sqrt(discriminant);
 			}
-			// no shadow
 			else
 			{
-				ambientColor += pointLights.at(i).ambientColor;
-				specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
-				diffuseColor +=  pointLights.at(i).getDiffuse(rec);
+				refractedDir = r.direction();
 			}
+
+			Ray refractedRay(rec.p, refractedDir);
+
+			return GetColorFromRay(refractedRay, world, cameraPosition, pointLights, directionalLights, bounce++);
 		}
 
-		for (int i = 0; i < directionalLights.size(); i++)
-		{
-			hitRecord shadowRec;
-			Ray shadowRay(rec.p, -directionalLights.at(i).direction);
-
-			// shadow
-			if (world->hit(shadowRay, 0.01, 100000, shadowRec))
-			{
-				ambientColor += directionalLights.at(i).ambientColor;
-				//specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
-				diffuseColor += directionalLights.at(i).getDiffuse(rec) * shadowIntensity;
-			}
-			// no shadow
-			else
-			{
-				ambientColor += directionalLights.at(i).ambientColor;
-				specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
-				diffuseColor += directionalLights.at(i).getDiffuse(rec);
-			}
-		}
-		
-		// Final color
-		if (rec.materialPtr->texture != nullptr)
-		{
-			//std::cout << "TEXTURE" << std::endl;
-			//std::cout << rec.u << rec.v << std::endl;
-			float redTexAmbientValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * 0.1 * ambientColor.r();
-			float greenTexAmbientValue =rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * 0.1 * ambientColor.g();
-			float blueTexAmbientValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * 0.1 * ambientColor.b();
-			
-			float redTexDiffuseValue =   rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * 3 * diffuseColor.r();
-			float greenTexDiffuseValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * 3 * diffuseColor.g();
-			float blueTexDiffuseValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * 3 * diffuseColor.b();
-			
-			float redTexSpecularValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * specularColor.r();
-			float greenTexSpecularValue =rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * specularColor.g();
-			float blueTexSpecularValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * specularColor.b();
-
-			return LightIntensity(red(redTexAmbientValue + redTexDiffuseValue + redTexSpecularValue),
-								  green(greenTexAmbientValue + greenTexDiffuseValue + greenTexSpecularValue),
-								  blue(blueTexAmbientValue + blueTexDiffuseValue + blueTexSpecularValue));
-		}
 		else
 		{
-			//std::cout << "TEXTURE" << std::endl;
-			return LightIntensity(red(rec.materialPtr->mAmbient.r()  * ambientColor.r() + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r()),
-								  green(rec.materialPtr->mAmbient.g()* ambientColor.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g()),
-								  blue(rec.materialPtr->mAmbient.b() * ambientColor.b() + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b()));
-		}
+			for (int i = 0; i < pointLights.size(); i++)
+			{
+				hitRecord shadowRec;
+				Ray shadowRay(rec.p, unit_vector(pointLights.at(i).location -rec.p));
 
+				// shadow
+				if (world->hit(shadowRay, 0.001, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false && rec.materialPtr->isRefractor == false)
+				{
+
+					ambientColor +=  pointLights.at(i).ambientColor;
+					//specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
+					diffuseColor += pointLights.at(i).getDiffuse(rec) * shadowIntensity;
+			
+				}
+				// no shadow
+				else
+				{
+					ambientColor += pointLights.at(i).ambientColor;
+					specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
+					diffuseColor +=  pointLights.at(i).getDiffuse(rec);
+				}
+			}
+
+			for (int i = 0; i < directionalLights.size(); i++)
+			{
+				hitRecord shadowRec;
+				Ray shadowRay(rec.p, -directionalLights.at(i).direction);
+
+
+				// shadow
+				if (world->hit(shadowRay, 0.001, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false && rec.materialPtr->isRefractor == false)
+				{
+					ambientColor += directionalLights.at(i).ambientColor;
+					//specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
+					diffuseColor += directionalLights.at(i).getDiffuse(rec) * shadowIntensity;
+				}
+				// no shadow
+				else
+				{
+					ambientColor += directionalLights.at(i).ambientColor;
+					specularColor += directionalLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess);
+					diffuseColor += directionalLights.at(i).getDiffuse(rec);
+				}
+			}
 		
+			// Final color
+			if (rec.materialPtr->texture != nullptr)
+			{
+				//std::cout << "TEXTURE" << std::endl;
+				//std::cout << rec.u << rec.v << std::endl;
+				float redTexAmbientValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * 0.1 * ambientColor.r();
+				float greenTexAmbientValue =rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * 0.1 * ambientColor.g();
+				float blueTexAmbientValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * 0.1 * ambientColor.b();
+			
+				float redTexDiffuseValue =   rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * 3 * diffuseColor.r();
+				float greenTexDiffuseValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * 3 * diffuseColor.g();
+				float blueTexDiffuseValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * 3 * diffuseColor.b();
+			
+				float redTexSpecularValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * specularColor.r();
+				float greenTexSpecularValue =rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * specularColor.g();
+				float blueTexSpecularValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * specularColor.b();
+
+				return LightIntensity(red(redTexAmbientValue + redTexDiffuseValue + redTexSpecularValue),
+									  green(greenTexAmbientValue + greenTexDiffuseValue + greenTexSpecularValue),
+									  blue(blueTexAmbientValue + blueTexDiffuseValue + blueTexSpecularValue));
+			}
+			else
+			{
+				//std::cout << "TEXTURE" << std::endl;
+				return LightIntensity(red(rec.materialPtr->mAmbient.r()  * ambientColor.r() + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r()),
+									  green(rec.materialPtr->mAmbient.g()* ambientColor.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g()),
+									  blue(rec.materialPtr->mAmbient.b() * ambientColor.b() + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b()));
+			}
+		}
 	}
 	else
 	{
 		//return LightIntensity(0, 50, 200);
-		return LightIntensity(0, 0, 0);
+		return LightIntensity(20, 20, 20);
 	}
 }
 

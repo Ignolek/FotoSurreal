@@ -151,10 +151,6 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Ray.cpp" />
-    <ClCompile Include="ReflectMaterial.cpp" />
-    <ClCompile Include="RefractMaterial.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -171,6 +167,7 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Ray.h" />
+    <ClInclude Include="rect.h" />
     <ClInclude Include="ReflectMaterial.h" />
     <ClInclude Include="RefractMaterial.h" />
     <ClInclude Include="Sphere.h" />
