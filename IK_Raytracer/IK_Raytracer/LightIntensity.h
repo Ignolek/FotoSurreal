@@ -38,6 +38,7 @@ public:
 	LightIntensity operator-(LightIntensity& li);
 	LightIntensity operator*(float num);
 	LightIntensity operator*(vec3 v);
+	LightIntensity operator+(vec3 v);
 	LightIntensity operator/(float num);
 
 	void operator+=(LightIntensity li);
@@ -47,6 +48,7 @@ public:
 
 	bool operator==(const LightIntensity& li);
 
+	LightIntensity multiply(LightIntensity li, vec3 color);
 
 	friend LightIntensity operator*(float num, LightIntensity& li);
 

@@ -71,41 +71,23 @@ int main()
     Material* transMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true);
     //materials.push_back(transMat);
 
-    Material* refractMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, true, 2.31);
+    Material* refractMat = new Material(vec3(1.0, 1.0, 1.0), vec3(255, 255, 255), 8, true, 1.5);
     //materials.push_back(refractMat);
 
-    Material* mirrorMat = new Material(vec3(255, 0, 0), vec3(255, 255, 255), 8, 1.0, true);
+    Material* mirrorMat = new Material(vec3(1.0, 1.0, 1.0), vec3(255, 255, 255), 8, 1.0, true);
     //materials.push_back(mirrorMat);
 
     // Vector of hitable objects
     std::vector<Hitable*> hitables;
 
-    // Parser object which is used to assign vertices and indices of object to those vertices and indices given below
-    ObjParser parser;
-    std::vector<vec3> vertices, indices;
-
-    //// Assigning vertices and indices;
-    //parser.ParseFile("coneBlend2.obj", vertices, indices);
-
-    //// Mesh made from parsed obj file
-
-    //// Second object creation:
-    //parser.ParseFile("cone.obj", vertices, indices);
-    //
-    //Mesh* cone = new Mesh(vertices, indices, 3, vec3(-3, 1, 0), new Material(vec3(60, 6, 6), vec3(200, 20, 20), vec3(255, 255, 255)));
-    //cone->addToWorld(&hitables);
-    //vertices.clear();
-    //indices.clear();
-
     // ---------------- SPHERES -----------------
-
-    Hitable* sphereMirror = new Sphere(vec3(2, 0, 1), 2, mirrorMat);
+    Hitable* sphereMirror = new Sphere(vec3(3, 0, 1), 2, mirrorMat);
     hitables.push_back(sphereMirror);
     
-    Hitable* sphereRefract = new Sphere(vec3(-2, 0, -1), -2, refractMat);
+    Hitable* sphereRefract = new Sphere(vec3(-2, 0, -2), 2, refractMat);
     hitables.push_back(sphereRefract);
 
-    Hitable* sphereTextured = new Sphere(vec3(-6, -1, 5), 1, earthMat);
+    Hitable* sphereTextured = new Sphere(vec3(-5, -1, 4), 1, earthMat);
     hitables.push_back(sphereTextured);
 
     // ---------------- CORNEL -----------------
@@ -133,6 +115,22 @@ int main()
 
     pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 9.5, -1), 0.5f, 20.0f, 8.0f, 700.0f));
 
+    // Parser object which is used to assign vertices and indices of object to those vertices and indices given below
+    ObjParser parser;
+    std::vector<vec3> vertices, indices;
+
+    //// Assigning vertices and indices;
+    //parser.ParseFile("coneBlend2.obj", vertices, indices);
+
+    //// Mesh made from parsed obj file
+
+    //// Second object creation:
+    //parser.ParseFile("cone.obj", vertices, indices);
+    //
+    //Mesh* cone = new Mesh(vertices, indices, 3, vec3(-3, 1, 0), new Material(vec3(60, 6, 6), vec3(200, 20, 20), vec3(255, 255, 255)));
+    //cone->addToWorld(&hitables);
+    //vertices.clear();
+    //indices.clear();
     std::cout << hitables.size() << std::endl;
 
     vec3 surLiPos = vec3(0, 1, 5);

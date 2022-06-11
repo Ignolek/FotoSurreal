@@ -97,6 +97,14 @@ bool LightIntensity::operator==(const LightIntensity& li)
 	else return false;
 }
 
+LightIntensity LightIntensity::multiply(LightIntensity li, vec3 color)
+{
+	li.r *= color.r();
+	li.g *= color.g();
+	li.b *= color.b();
+	return li;
+}
+
 
 
 LightIntensity LightIntensity::Antialiasing(Hitable* world, Camera* camera, float fov, float m, bool ortho, float xMin, float xMax, float yMin, float yMax, int x, int y, float w, std::vector<LightIntensity*> diffuseColors, std::vector<PointLight> pointLights, std::vector<DirectionalLight> directionalLights)
@@ -198,6 +206,16 @@ LightIntensity LightIntensity::operator*(vec3 v)
 	return Result;
 }
 
+LightIntensity LightIntensity::operator+(vec3 v)
+{
+	LightIntensity Result;
+	Result.r += v.r();
+	Result.g += v.g();
+	Result.b += v.b();
+	return Result;
+}
+
+
 //LightIntensity operator*(LightIntensity& li, float num)
 //{
 //	LightIntensity Result;
@@ -225,12 +243,12 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			vec3 scatterDir = (unit_vector(r.direction()) - 2 * dot(unit_vector(r.direction()), newNormal) * newNormal);
 			Ray scatterRay(rec.p, (scatterDir));
 
-			return GetColorFromRay(scatterRay, world, cameraPosition, pointLights, directionalLights, bounce++);
+			return multiply(GetColorFromRay(scatterRay, world, cameraPosition, pointLights, directionalLights, bounce++), rec.materialPtr->mDiffuse);
 		}
 
 		else if (rec.materialPtr->isRefractor && bounce < 5)
 		{
-			rec.materialPtr->refraction = 2.0f - rec.materialPtr->refraction;
+			rec.materialPtr->refraction = 1.0f - rec.materialPtr->refraction;
 			vec3 refractedDir;
 			vec3 uv = unit_vector(r.direction());
 			//float dt = dot(uv, -rec.normal);
@@ -253,7 +271,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			{
 				attenuation = rec.materialPtr->mDiffuse;
 			}
-			return GetColorFromRay(refractedRay, world, cameraPosition, pointLights, directionalLights, bounce++);// * rec.materialPtr->mDiffuse;
+			return multiply(GetColorFromRay(refractedRay, world, cameraPosition, pointLights, directionalLights, bounce++), rec.materialPtr->mDiffuse);
 		}
 
 		else
@@ -266,7 +284,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 				// shadow
 				if (world->hit(shadowRay, 0.001, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
 				{
-					if (shadowRec.materialPtr->isRefractor == true)
+					if (shadowRec.materialPtr->isRefractor)
 					{
 						ambientColor += pointLights.at(i).ambientColor;
 						specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity * 4;
@@ -312,10 +330,9 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			}
 		
 			// Final color
+			// TEXTURE
 			if (rec.materialPtr->texture != nullptr)
 			{
-				//std::cout << "TEXTURE" << std::endl;
-				//std::cout << rec.u << rec.v << std::endl;
 				float redTexAmbientValue =  rec.materialPtr->texture->value(rec.u, rec.v, rec.p).r() * 0.1 * ambientColor.r();
 				float greenTexAmbientValue =rec.materialPtr->texture->value(rec.u, rec.v, rec.p).g() * 0.1 * ambientColor.g();
 				float blueTexAmbientValue = rec.materialPtr->texture->value(rec.u, rec.v, rec.p).b() * 0.1 * ambientColor.b();
@@ -332,9 +349,9 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 									  green(greenTexAmbientValue + greenTexDiffuseValue + greenTexSpecularValue),
 									  blue(blueTexAmbientValue + blueTexDiffuseValue + blueTexSpecularValue));
 			}
+			// NO TEXTURE
 			else
 			{
-				//std::cout << "TEXTURE" << std::endl;
 				return LightIntensity(red(rec.materialPtr->mAmbient.r()  * ambientColor.r() + rec.materialPtr->mDiffuse.r() * diffuseColor.r() + rec.materialPtr->mSpecular.r() * specularColor.r()),
 									  green(rec.materialPtr->mAmbient.g()* ambientColor.g() + rec.materialPtr->mDiffuse.g() * diffuseColor.g() + rec.materialPtr->mSpecular.g() * specularColor.g()),
 									  blue(rec.materialPtr->mAmbient.b() * ambientColor.b() + rec.materialPtr->mDiffuse.b() * diffuseColor.b() + rec.materialPtr->mSpecular.b() * specularColor.b()));
