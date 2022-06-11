@@ -4,10 +4,12 @@ class XYRect: public Hitable
 {
 public:
 	float x0, x1, y0, y1, k;
+
+	bool isFlipped = false;
 	Material* mp;
 
 	XYRect(){}
-	XYRect(float _x0, float _x1, float _y0, float _y1, float _k, Material* mat) : x0(_x0), x1(_x1), y0(_y0), y1(_y1), k(_k), mp(mat) {};
+	XYRect(float _x0, float _x1, float _y0, float _y1, float _k, Material* mat, bool isFlip) : x0(_x0), x1(_x1), y0(_y0), y1(_y1), k(_k), mp(mat), isFlipped(isFlip) {};
 
 	virtual bool hit(const Ray& r, float t0, float t1, hitRecord& rec) const
 	{
@@ -25,7 +27,11 @@ public:
 		rec.t = t;
 		rec.materialPtr = mp;
 		rec.p = r.pointAtParameter(t);
-		rec.normal = vec3(0, 0, 1);
+
+		if (isFlipped)
+			rec.normal = vec3(0, 0, 1);
+		else
+			rec.normal = vec3(0, 0, -1);
 
 		return true;
 	}

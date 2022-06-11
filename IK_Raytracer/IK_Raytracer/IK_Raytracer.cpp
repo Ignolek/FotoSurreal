@@ -2,6 +2,9 @@
 #include <fstream>
 #include "vec3.h"
 #include "Sphere.h"
+#include "XYRect.h"
+#include "YZRect.h"
+#include "XZRect.h"
 #include "Plane.h"
 #include "Triangle.h"
 #include "Ray.h"
@@ -22,15 +25,15 @@
 int main()
 {
     // Screen resolution
-    int scrWidth = 1000;
-    int scrHeight = 500;
+    int scrWidth = 200* 16;
+    int scrHeight = 200 * 9;
 
     // Image
     Image* perspective = new Image(scrWidth, scrHeight, 3);
 
     // Camera and rays settings
     float fov = 90.0f;
-    vec3 lookAtPoint(0, -1, 0);
+    vec3 lookAtPoint(0, 0, 0);
     //Camera* cam = new Camera(vec3(3, 10, -5), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
     Camera* cam = new Camera(vec3(0, 2, -10), lookAtPoint, vec3(0, -1, 0), fov, float(scrWidth)/float(scrHeight));
 
@@ -53,34 +56,22 @@ int main()
 
     Material* earthMat = new Material(new ImageTexture(earthTexData, nX, nY), vec3(255, 255, 255), 32);
 
-    Material* blackMat = new Material(vec3(6, 6, 6), vec3(20, 20, 20), vec3(255, 255, 255), 32);
-    //materials.push_back(blackMat);
-
-    Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(0, 0, 0), 8);
+    Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(0, 0, 0), 64);
     materials.push_back(grassMat);
 
-    Material* goldMat = new Material(vec3(20, 0, 0), vec3(255, 0, 0), vec3(50, 50, 50), 8);
-    materials.push_back(goldMat);
+    Material* redMat = new Material(vec3(20, 0, 0), vec3(500, 0, 0), vec3(50, 50, 50), 64);
+    materials.push_back(redMat);
 
-    Material* redMat = new Material(vec3(255, 0, 0), vec3(255, 255, 255), 8, 1.0f, true);
-    //materials.push_back(redMat);
+    Material* blueMat = new Material(vec3(0, 0, 20), vec3(0, 0, 500), vec3(50, 50, 50), 64);
+    materials.push_back(redMat);
 
-    Material* silverMat = new Material(vec3(10, 10, 10), vec3(100, 100, 100), vec3(255, 255, 255), 32);
-    materials.push_back(silverMat);
-
-    Material* whiteMat = new Material(vec3(30, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 16);
+    Material* whiteMat = new Material(vec3(10, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 64);
     materials.push_back(whiteMat);
 
     Material* transMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true);
     //materials.push_back(transMat);
 
-    Material* fuzzMat = new Material(vec3(0, 0, 255), vec3(255, 255, 255), 32, 0.1f);
-    //materials.push_back(fuzzMat);
-    
-    Material* redFuzzMat = new Material(vec3(255, 50, 150), vec3(255, 255, 255), 16, 0.7f);
-    //materials.push_back(redFuzzMat);
-
-    Material* refractMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, true, 1.3);
+    Material* refractMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, true, 1.5);
     //materials.push_back(refractMat);
 
     Material* mirrorMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, 1.0, true);
@@ -106,86 +97,55 @@ int main()
     //vertices.clear();
     //indices.clear();
 
-    // green sphere which simulates ground
-    Hitable* ground = new Sphere(vec3(0, -101, -1), 100.0, grassMat);
-    hitables.push_back(ground);
+    // ---------------- SPHERES -----------------
 
-    Hitable* sphere = new Sphere(vec3(-20, 1, 80), 3, earthMat);
-    hitables.push_back(sphere);
-
-    Hitable* sphereMirror = new Sphere(vec3(5, 1, 2), 3, mirrorMat);
+    Hitable* sphereMirror = new Sphere(vec3(2, 0, 1), 2, mirrorMat);
     hitables.push_back(sphereMirror);
     
-    Hitable* sphereRect = new Sphere(vec3(-5, 1, 2), -3, refractMat);
-    hitables.push_back(sphereRect);
-    /*Hitable* sphere1 = new Sphere(vec3(0, 0, -1), 2, vec3(0, 154, 23), new Material(vec3(0, 0, 0), vec3(30, 30, 30), vec3(255, 255, 255), 128));
-    hitables.push_back(sphere1);*/
-    
-    Hitable* sphere2 = new Sphere(vec3(-4, 0, -1), 2, redMat);
-    //hitables.push_back(sphere2);
+    Hitable* sphereRefract = new Sphere(vec3(-2, 0, -1), -2, refractMat);
+    hitables.push_back(sphereRefract);
 
-    Hitable* sphere3 = new Sphere(vec3(-6, 0, 5), 2, whiteMat);
-    //hitables.push_back(sphere3);
+    Hitable* sphereTextured = new Sphere(vec3(-6, -1, 5), 1, earthMat);
+    hitables.push_back(sphereTextured);
 
-    Hitable* sphere4 = new Sphere(vec3(6, 0, 5), 2, silverMat);
-    //hitables.push_back(sphere4);
+    // ---------------- CORNEL -----------------
+    Hitable* backRect = new XYRect(-6, 6, -3, 10, 5, whiteMat, true);
+    hitables.push_back(backRect);
 
+    Hitable* frontRect = new XYRect(-6, 6, -3, 10, -10, whiteMat, false);
+    hitables.push_back(frontRect);
 
-    int size = 2;
-    float maxF = 10;
-    float minF = -10;
+    Hitable* rightRect = new YZRect(-3, 10, -10, 5, 6, blueMat, true);
+    hitables.push_back(rightRect);
 
-    // random spheres generator
-    /*for (int i = -size; i < size; i++)
-    {
-        for (int j = -size; j < size; j++)
-        {
-            float step = ((float(rand()) / float(RAND_MAX)) *            (maxF - minF)) + minF;
-            float step2 = ((float(rand()) / float(RAND_MAX)) *           (maxF - minF)) + minF;
-            float step3 = ((float(rand()) / float(RAND_MAX)) *           (maxF - minF)) + minF;
-            float randomPosition = ((float(rand()) / float(RAND_MAX)) *  (maxF - minF)) + minF;
-            float randomPosition2 = ((float(rand()) / float(RAND_MAX)) * (maxF - minF)) + minF;
-            float randomPosition3 = ((float(rand()) / float(RAND_MAX)) * (maxF - minF)) + minF;
+    Hitable* leftRect = new YZRect(-3, 10, -10, 5, -6, redMat, false);
+    hitables.push_back(leftRect);
 
-            float calculateYPos = step2 + randomPosition2;
-            if (calculateYPos < 0.0f) calculateYPos = 0.0f;
-            float randomRadius = 1 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 - 1)));
-            int randomMat = rand() % materials.size();
-            hitables.push_back(new Sphere(vec3((step + randomPosition),
-                                               (calculateYPos),
-                                               (step3 + randomPosition3)),
-                                                randomRadius, materials.at(randomMat)));
-        }
-    }*/
+    Hitable* bottomRect = new XZRect(-10, 10, -10, 5, -2, grassMat, true);
+    hitables.push_back(bottomRect);
 
-    std::cout << hitables.size() << std::endl;
+    Hitable* topRect = new XZRect(-10, 10, -10, 5, 10, whiteMat, false);
+    hitables.push_back(topRect);
 
-    //Hitable* plane = new Plane(vec3(0, 5, 0), vec3(5, 0, 0), vec3(0, 5, 0), new Material(vec3(0, 0, 0), vec3(0.1, 154, 23), vec3(255, 255, 255), 256));
-    //Hitable* plane = new Plane(1, -4, 4, -1, new Material(vec3(0, 0, 0), vec3(0.1, 154, 23), vec3(255, 255, 255), 256));
-    //hitables.push_back(plane);
-
-
-    // Lights
+    // ---------------- LIGHTS -----------------
     std::vector<PointLight> pointLights;
     std::vector<DirectionalLight> directionalLights;
 
-    //pointLights.push_back(PointLight(vec3(0.1, 0.1, 1.0), vec3(0.1, 0.1, 1.0), vec3(-10, 5, -1), 0.5f, 20.0f, 5.0f, 200.0f));
-    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(10, 5, -1), 0.5f, 20.0f, 8.0f, 200.0f));
+    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 9.5, -1), 0.5f, 200.0f, 8.0f, 700.0f));
+
+    std::cout << hitables.size() << std::endl;
 
     vec3 surLiPos = vec3(0, 1, 5);
     int surLiSize = 2;
     float surLiIntensity = 200 / (surLiSize * surLiSize);
     float lightSourceStep = .5f;
+
     /*for (int i = 0; i < surLiSize; i++)
     {
         for (int j = 0; j < surLiSize; j++)
     		pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(surLiPos.x() + i * lightSourceStep, surLiPos.y() + j * lightSourceStep, surLiPos.z()), 0.5f, 20.0f, 2.0f, surLiIntensity));
     }*/
      
-    
-    //directionalLights.push_back(DirectionalLight(vec3(1, 0.8, 0.8), vec3(1, 0.8, 0.8), vec3(-3, -1, -1), 1.0f));
-    //directionalLights.push_back(DirectionalLight(vec3(1, 0.8, 0.8), vec3(1, 0.8, 0.8), vec3(-3, -1, -1), 1.0f));
-
     // PointLights gizmos
     for (int i = 0; i < pointLights.size(); i++)
     {

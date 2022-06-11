@@ -218,15 +218,16 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 		vec3 diffuseColor (0, 0, 0);
 		vec3 specularColor(0, 0, 0);
 
-		if (rec.materialPtr->isMirror && bounce < 2)
+		if (rec.materialPtr->isMirror && bounce < 5)
 		{
-			vec3 scatterDir = (unit_vector(r.direction()) - 2 * dot(unit_vector(r.direction()), -rec.normal) * -rec.normal);
+			vec3 newNormal = -rec.normal;
+			vec3 scatterDir = (unit_vector(r.direction()) - 2 * dot(unit_vector(r.direction()), newNormal) * newNormal);
 			Ray scatterRay(rec.p, (scatterDir));
 
 			return GetColorFromRay(scatterRay, world, cameraPosition, pointLights, directionalLights, bounce++);
 		}
 
-		else if (rec.materialPtr->isRefractor && bounce < 2)
+		else if (rec.materialPtr->isRefractor && bounce < 5)
 		{
 			vec3 refractedDir;
 			vec3 uv = unit_vector(r.direction());
@@ -326,7 +327,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 	else
 	{
 		//return LightIntensity(0, 50, 200);
-		return LightIntensity(20, 20, 20);
+		return LightIntensity(0, 0, 0);
 	}
 }
 
