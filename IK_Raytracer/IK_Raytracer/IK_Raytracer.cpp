@@ -56,25 +56,25 @@ int main()
 
     Material* earthMat = new Material(new ImageTexture(earthTexData, nX, nY), vec3(255, 255, 255), 32);
 
-    Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(0, 0, 0), 64);
+    Material* grassMat = new Material(vec3(0, 20, 0), vec3(100, 255, 20), vec3(10, 10, 10), 3);
     materials.push_back(grassMat);
 
-    Material* redMat = new Material(vec3(20, 0, 0), vec3(500, 0, 0), vec3(50, 50, 50), 64);
+    Material* redMat = new Material(vec3(20, 0, 0), vec3(500, 0, 0), vec3(10, 10, 10), 4);
     materials.push_back(redMat);
 
-    Material* blueMat = new Material(vec3(0, 0, 20), vec3(0, 0, 500), vec3(50, 50, 50), 64);
+    Material* blueMat = new Material(vec3(0, 0, 20), vec3(0, 0, 500), vec3(10, 10, 10), 4);
     materials.push_back(redMat);
 
-    Material* whiteMat = new Material(vec3(10, 10, 10), vec3(255, 255, 255), vec3(50, 50, 50), 64);
+    Material* whiteMat = new Material(vec3(10, 10, 10), vec3(255, 255, 255), vec3(10, 10, 10), 4);
     materials.push_back(whiteMat);
 
     Material* transMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true);
     //materials.push_back(transMat);
 
-    Material* refractMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, true, 1.5);
+    Material* refractMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, true, 2.31);
     //materials.push_back(refractMat);
 
-    Material* mirrorMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), 8, 1.0, true);
+    Material* mirrorMat = new Material(vec3(255, 0, 0), vec3(255, 255, 255), 8, 1.0, true);
     //materials.push_back(mirrorMat);
 
     // Vector of hitable objects
@@ -131,7 +131,7 @@ int main()
     std::vector<PointLight> pointLights;
     std::vector<DirectionalLight> directionalLights;
 
-    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 9.5, -1), 0.5f, 200.0f, 8.0f, 700.0f));
+    pointLights.push_back(PointLight(vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0, 9.5, -1), 0.5f, 20.0f, 8.0f, 700.0f));
 
     std::cout << hitables.size() << std::endl;
 

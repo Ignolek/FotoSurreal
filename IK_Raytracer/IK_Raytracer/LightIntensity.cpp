@@ -210,7 +210,8 @@ LightIntensity LightIntensity::operator*(vec3 v)
 LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec3 cameraPosition, std::vector<PointLight> pointLights, std::vector<DirectionalLight> directionalLights, int bounce)
 {
 	hitRecord rec;
-	float shadowIntensity = 0.0f; // 0 - black , 1 - no shadow
+	float shadowIntensity = 0.20f; // 0 - black , 1 - no shadow
+	vec3 attenuation;
 
 	if (world->hit(r, 0.001, 10000, rec))
 	{
@@ -229,13 +230,17 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 
 		else if (rec.materialPtr->isRefractor && bounce < 5)
 		{
+			rec.materialPtr->refraction = 2.0f - rec.materialPtr->refraction;
 			vec3 refractedDir;
 			vec3 uv = unit_vector(r.direction());
-			float dt = dot(uv, -rec.normal);
-			float discriminant = 1.0 - rec.materialPtr->refraction * rec.materialPtr->refraction * (1 - dt * dt);
-			if (discriminant > 0)
+			//float dt = dot(uv, -rec.normal);
+			//float discriminant = 1.0 - rec.materialPtr->refraction * rec.materialPtr->refraction * (1 - dt * dt);
+			float cosi = dot(rec.normal, uv);
+
+			if (cosi > 0)
 			{
-				refractedDir = rec.materialPtr->refraction * (uv - rec.normal * dt) - rec.normal * sqrt(discriminant);
+				//refractedDir = rec.materialPtr->refraction * (uv - rec.normal * dt) - rec.normal * sqrt(discriminant);
+				refractedDir = (uv * rec.materialPtr->refraction - rec.normal * (-cosi + rec.materialPtr->refraction * cosi));
 			}
 			else
 			{
@@ -244,7 +249,11 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 
 			Ray refractedRay(rec.p, refractedDir);
 
-			return GetColorFromRay(refractedRay, world, cameraPosition, pointLights, directionalLights, bounce++);
+			if (bounce == 0)
+			{
+				attenuation = rec.materialPtr->mDiffuse;
+			}
+			return GetColorFromRay(refractedRay, world, cameraPosition, pointLights, directionalLights, bounce++);// * rec.materialPtr->mDiffuse;
 		}
 
 		else
@@ -255,12 +264,20 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 				Ray shadowRay(rec.p, unit_vector(pointLights.at(i).location -rec.p));
 
 				// shadow
-				if (world->hit(shadowRay, 0.001, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false && rec.materialPtr->isRefractor == false)
+				if (world->hit(shadowRay, 0.001, 100000, shadowRec) && shadowRec.materialPtr->isTransparent == false)
 				{
-
-					ambientColor +=  pointLights.at(i).ambientColor;
-					//specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
-					diffuseColor += pointLights.at(i).getDiffuse(rec) * shadowIntensity;
+					if (shadowRec.materialPtr->isRefractor == true)
+					{
+						ambientColor += pointLights.at(i).ambientColor;
+						specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity * 4;
+						diffuseColor += pointLights.at(i).getDiffuse(rec) * shadowIntensity * 4;
+					}
+					else
+					{
+						ambientColor +=  pointLights.at(i).ambientColor;
+						//specularColor += pointLights.at(i).getSpecular(rec, -cameraPosition, rec.materialPtr->shininess) * shadowIntensity;
+						diffuseColor += pointLights.at(i).getDiffuse(rec) * shadowIntensity;
+					}
 			
 				}
 				// no shadow
