@@ -248,7 +248,7 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 
 		else if (rec.materialPtr->isRefractor && bounce < 5)
 		{
-			rec.materialPtr->refraction = 1.0f - rec.materialPtr->refraction;
+			rec.materialPtr->refraction = 2.0f - rec.materialPtr->refraction;
 			vec3 refractedDir;
 			vec3 uv = unit_vector(r.direction());
 			//float dt = dot(uv, -rec.normal);
@@ -266,11 +266,6 @@ LightIntensity LightIntensity::GetColorFromRay(const Ray& r, Hitable* world, vec
 			}
 
 			Ray refractedRay(rec.p, refractedDir);
-
-			if (bounce == 0)
-			{
-				attenuation = rec.materialPtr->mDiffuse;
-			}
 			return multiply(GetColorFromRay(refractedRay, world, cameraPosition, pointLights, directionalLights, bounce++), rec.materialPtr->mDiffuse);
 		}
 

@@ -71,7 +71,7 @@ int main()
     Material* transMat = new Material(vec3(255, 255, 255), vec3(255, 255, 255), vec3(255, 255, 255), 1, true);
     //materials.push_back(transMat);
 
-    Material* refractMat = new Material(vec3(1.0, 1.0, 1.0), vec3(255, 255, 255), 8, true, 1.5);
+    Material* refractMat = new Material(vec3(1.0, 1.0, 1.0), vec3(255, 255, 255), 8, true, 1.35);
     //materials.push_back(refractMat);
 
     Material* mirrorMat = new Material(vec3(1.0, 1.0, 1.0), vec3(255, 255, 255), 8, 1.0, true);
